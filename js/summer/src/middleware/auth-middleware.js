@@ -15,11 +15,9 @@ export default async function authMiddleware(req, res, next) {
 	
 	// Extraindo o token (formato esperado: "Bearer <token>")
 	const token = authHeader.split(' ')[1]
-	console.log(`Request Token: ${token}`)
 	const {login} = await AuthUtils.verifyTokenJWT(token)
 	// const dataToken = AuthUtils.verifyTokenJWT(token)
 
-	console.log(`Token Login: ${login}`)
 
 	// Verificando a validade do token
 	if (!!login){
