@@ -5,7 +5,7 @@ function buildHashPwdAndSalt(password){
 	const salt =  randomBytes(16).toString("hex")
 	const hash = scryptSync(password, salt, 64).toString("hex");
 
-	console.log(`salt: ${salt} || hash: ${hash}`);
+	// console.log(`salt: ${salt} || hash: ${hash}`);
 	
 	return { salt, hash }
 }
@@ -31,7 +31,7 @@ function gerarTokenJWT(data) {
 
 	const tokenJwt = jwt.sign(data, process.env.SEGREDO_JWT, { expiresIn: "1h" })
 
-	return tokenJwt;
+	return {token: tokenJwt};
 
 };
 

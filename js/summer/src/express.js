@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 
 import authRoutes from "./routes/auth-routes.js";
 import noAuthRoutes from "./routes/noauth-routes.js";
+import responseFormatter from "./middleware/return-messages-middleware.js"
 
 const app = express();
 
@@ -13,6 +14,8 @@ const app = express();
 	// });
 	
 app.use(bodyParser.json());
+app.use(responseFormatter);
+
 app.use('/', noAuthRoutes);
 app.use('/a', authRoutes);
 

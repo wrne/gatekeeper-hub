@@ -1,37 +1,61 @@
 import express from "express";
-import authController from "../controllers/auth/authControllers.js"
+import authController from "../controllers/auth/login-controllers.js"
 import taskController from "../controllers/task/taskControllers.js"
 import authMiddleware from "../middleware/auth-middleware.js"
+import { logMessage } from "../utils/log-generator.js";
 
 const router = express.Router();
 router.use(authMiddleware)
 
 router.post('/newUser', async(req, res) => {
 	
-	if(authController.newUser(req.body)){
-		res.send('user added successful.');
-	} else {
-		res.send('user adding failed.');
+	try {
+		const usersAdded = authController.newUser(req.body)
+		if (usersAdded < 1)
+			throw new Error("User include failed ");
+		
+		logMessage(`User ${req.body.login} added successful`)
+		res.success(null,'user added successful.')
+		
+	} catch (error) {
+		
+		res.error(500,error,'User adding failed.');
 	}
+	
 });
 
 router.post('/newTaskAgrega', async(req, res) => {
 	
-	if(taskController.newTask('agrega',req.body)){
-		res.send('task added successful.');
-	} else {
-		res.send('task adding failed.');
+	
+	try {
+		
+		if(!taskController.newTask('agrega',req.body))
+			throw new Error("task adding failed");
+		
+		logMessage(`Agrega Task added successful`)
+		res.success(null, 'task added successful.')
+		
+		
+	} catch (error) {
+		res.error(500, error, 'Failure on add Agregga task')
 	}
 });
 
-router.post('/newTaskSimulador', async(req, res) => {
+router.post('/newTaskSimulador', async (req, res) => {
 	
-	if(taskController.newTask('simulador',req.body)){
-		res.send('task added successful.');
-	} else {
-		res.send('task adding failed.');
+	try {
+		
+		await taskController.newTask('simulador',req.body)
+		logMessage(`Simulador Task added successful`)
+
+		res.success(null, 'task added successful.')
+
+
+	} catch (error) {
+		res.error(500, error, 'Failure on add Simulador task')
 	}
 });
+
 
 
 export default router;

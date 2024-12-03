@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import dbConn from "../../db/database-connection.js"
 import AuthUtils from "../../auth/auth-utils.js"
+import { logMessage } from '../../utils/log-generator.js';
 
 const db = new dbConn();
 
@@ -12,7 +13,7 @@ function newUser({login, password, name}){
 	// console.log(`salt: ${salt} || hash: ${hash}`);
 
 	const insertNewUserStt = `insert into summer_users(id, login, name, password) values ('${uudi}','${login}', '${name}','${hash}:${salt}' )`
-	return db.exec(insertNewUserStt)
+	return db.exec(insertNewUserStt) > 0
 
 }
 
@@ -28,13 +29,15 @@ async function authUser({login, password}){
 		
 		const isValidPassword = AuthUtils.validPassword(password, salt, hash)
 		
-		if (isValidPassword){
+		if (!isValidPassword){
 
-			return AuthUtils.gerarTokenJWT({login})
-		} else {
-
-			return "Erro na autenticação"
+			throw new Error("Password incorrect");
+			
 		}
+
+		logMessage(`User autenticated: ${login}`);
+		
+		return AuthUtils.gerarTokenJWT({login})
 		
 	}
 	

@@ -1,5 +1,6 @@
 import sql from "mssql"
 import "dotenv/config"
+import { logError } from "../utils/log-generator.js"
 
 class dbConn {
 
@@ -26,7 +27,7 @@ class dbConn {
 		if (!this.pool)
 			this.pool = await sql.connect(this.sqlConfig)
 
-		console.log(`query: ${queryStt}`);
+		// console.log(`query: ${queryStt}`);
 		
 		const result = await this.pool.request().query(queryStt /*,(err, rs)=>{
 		
@@ -62,16 +63,17 @@ class dbConn {
 		await this.pool.request().query(execStt,(err, rs)=>{
 
 			if (!!err){
-				console.log(err)
+				logError(err)
+				throw new Error(err);
+				
 			}
 
-			console.log(`Successful. Rows affected: ${rs?.rowsAffected}`)
+			console.log(`Successful. Regs affected: ${rs?.rowsAffected}`)
 
-			return true
+			return rs?.rowsAffected
 
 		})
 
-		return false
 	}
 	
 }

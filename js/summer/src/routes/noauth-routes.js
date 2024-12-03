@@ -1,17 +1,20 @@
 import express from "express";
-import authController from "../controllers/auth/authControllers.js"
+import loginController from "../controllers/auth/login-controllers.js"
 
 const router = express.Router();
 
-router.post('/login', async(req, res) => {
+router.post('/login', async (req, res) => {
 
-	res.send(await authController.authUser(req.body));
+	try {
 
-	// if( await authController.authUser(req.body)){
-	// 	res.send('user autenticated successful. ');
-	// } else {
-	// 	res.send('user autentication failed.');
-	// }
+		res.success(await loginController.authUser(req.body), 'User successful autenticated.')
+
+	} catch (error) {
+
+		res.error(401, error, `User autentication failed`)
+
+	}
+
 });
 
 export default router;
