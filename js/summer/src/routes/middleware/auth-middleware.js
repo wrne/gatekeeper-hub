@@ -1,6 +1,6 @@
-import AuthUtils from "../auth/auth-utils.js"
-import authController from "../controllers/auth/login-controllers.js";
-import {logMessage} from "../utils/log-generator.js";
+import AuthUtils from "../../utils/auth-utils.js"
+import authController from "../../controllers/auth/login-controllers.js";
+import {logMessage} from "../../utils/log-generator.js";
 
 // Middleware que será aplicado somente ao grupo de rotas
 export default async function authMiddleware(req, res, next) {

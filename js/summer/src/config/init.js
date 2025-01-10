@@ -19,7 +19,7 @@ async function createTable() {
 	)
 	`
 
-	const extendedPropertyStt = `exec sp_addextendedproperty 'MS_Description', N'Usuários de integração CCAB', 'SCHEMA', 'dbo', 'TABLE', 'summer_users'`
+	// const extendedPropertyStt = `exec sp_addextendedproperty 'MS_Description', N'Usuários de integração CCAB', 'SCHEMA', 'dbo', 'TABLE', 'summer_users'`
 
 	const createIndexStt = `
 	create unique index [summer_users_id_uindex]

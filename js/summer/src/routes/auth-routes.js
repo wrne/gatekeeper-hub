@@ -1,7 +1,7 @@
 import express from "express";
 import authController from "../controllers/auth/login-controllers.js"
 import taskController from "../controllers/task/taskControllers.js"
-import authMiddleware from "../middleware/auth-middleware.js"
+import authMiddleware from "./middleware/auth-middleware.js"
 import { logMessage } from "../utils/log-generator.js";
 
 const router = express.Router();

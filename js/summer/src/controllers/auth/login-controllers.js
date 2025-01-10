@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import dbConn from "../../db/database-connection.js"
-import AuthUtils from "../../auth/auth-utils.js"
+import dbConn from "../../infra/db/database-connection.js"
+import AuthUtils from "../../utils/auth-utils.js"
 import { logMessage } from '../../utils/log-generator.js';
 
 const db = new dbConn();

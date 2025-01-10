@@ -1,8 +1,8 @@
-import publish from "../../queue/queue-manager.js"
+import publish from "../../infra/queue/queue-manager.js"
 
 function newTask(routingKey,task){
 	
-	publish('orders_teste',routingKey,task)
+	publish(process.summer.exchanges.QUEUE_ORDERS,routingKey,task)
 
 }
 

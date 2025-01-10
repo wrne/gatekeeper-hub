@@ -1,6 +1,6 @@
 import sql from "mssql"
 import "dotenv/config"
-import { logError } from "../utils/log-generator.js"
+import { logError } from "../../utils/log-generator.js"
 
 class dbConn {
 
