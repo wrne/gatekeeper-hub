@@ -57,6 +57,9 @@ class dbConn {
 
 	async pagedQuery(fields, table, where, orderBy, pageNumber, pageSize) {
 
+		const whereArr = Object.entries(where)
+		const isThereWhere = !!where && whereArr.length > 0
+
 		if (!this.pool)
 			this.pool = await sql.connect(this.sqlConfig)
 
@@ -68,10 +71,10 @@ class dbConn {
 		request.input('pageNumber', sql.Int, pageNumber)
 		request.input('pageSize', sql.Int, pageSize)
 
-		if (where) {
+		if (isThereWhere) {
 
 			// Tratamento contra SQL Injection das condições enviadas no parametro 'Where' 
-			const whereArr = Object.entries(where)
+			
 			whereStt = whereArr
 				.map(condition => {
 					const [prop, value] = condition
@@ -88,7 +91,7 @@ class dbConn {
 		const query = `
 			SELECT ${fieldsStt}
 			FROM ${table}
-			WHERE ${whereStt}
+			${(isThereWhere ? `WHERE ${whereStt}` : '')}
 			ORDER BY ${orderBy}
 		    OFFSET @pageSize * (@pageNumber - 1) ROWS
 			FETCH NEXT @pageSize ROWS ONLY
