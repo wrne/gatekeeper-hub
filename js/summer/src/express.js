@@ -1,6 +1,9 @@
 import express from "express";
 import bodyParser from "body-parser";
 import helmet from "helmet";
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "./swagger.json"  with { type: 'json' };;
+
 import authRoutes from "./routes/auth-routes.js";
 import noAuthRoutes from "./routes/noauth-routes.js";
 import responseFormatter from "./routes/middleware/return-messages-middleware.js"
@@ -16,6 +19,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(responseFormatter);
 app.use(helmet());
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use( noAuthRoutes );
 app.use( authRoutes );
