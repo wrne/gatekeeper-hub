@@ -70,7 +70,7 @@ router.get('/orders', async (req, res) => {
 
 
 	} catch (error) {
-		res.error(500, error, 'Failure on add Simulador task')
+		res.error(500, error, 'Failure on getting orders')
 	}
 });
 

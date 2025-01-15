@@ -1,5 +1,20 @@
-import dbConn from "../db/database-connection.js"
+import dbConn from "../infra/db/database-connection.js"
 import amqp from "amqplib/callback_api.js"
+import UserControl from '../controllers/auth/login-controllers.js'
+
+
+async function createNewAdm() {
+
+	const newPwd = process.env.SUMMER_ADM_PWD || 'sUmw3r@2025'
+	const defaultUser = {
+		login: 'admin',
+		name: 'Admin',
+		password: newPwd
+	}
+
+	UserControl.newUser(defaultUser);
+}
+
 
 /**
  * Função responsável por criar a tabela de usuários de integração.
@@ -31,8 +46,9 @@ async function createTable() {
 	// await db.exec(extendedPropertyStt);
 	await db.exec(createIndexStt);
 	// await db.exec(addConstraintStt);
-}
 
+	await createNewAdm()
+}
 
 /**
  * Função que cria a estrutura de fila no RabbitMQ.
