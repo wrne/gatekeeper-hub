@@ -23,11 +23,44 @@ class dbConn {
 
 	}
 
-	async query(queryStt) {
+	async query(queryStt, params = {}) {
 		if (!this.pool)
 			this.pool = await sql.connect(this.sqlConfig)
 
-		// console.log(`query: ${queryStt}`);
+		const request = this.pool.request()
+
+
+		const { where = [], pageNumber = 1, pageSize = 10, paged = false } = params
+
+		const whereArr = Object.entries(where)
+		const isThereWhere = !!where && whereArr.length > 0
+
+
+		if (isThereWhere) {
+
+			// Tratamento contra SQL Injection das condições enviadas no parametro 'Where' 
+
+			whereArr.forEach(condition => {
+
+				const [prop, value] = condition
+				request.input(prop, sql.VarChar, value)
+
+			})
+		}
+
+		// Caso queira paginar a query
+		let pagedStt = ''
+		if (paged) {
+
+			request.input('pageNumber', sql.Int, pageNumber)
+			request.input('pageSize', sql.Int, pageSize)
+			pagedStt =
+				`OFFSET @pageSize * (@pageNumber - 1) ROWS
+			FETCH NEXT @pageSize ROWS ONLY`
+		}
+
+
+		queryStt += pagedStt
 
 		const result = await this.pool.request().query(queryStt /*,(err, rs)=>{
 		
@@ -38,24 +71,28 @@ class dbConn {
 		}*/)
 
 
-		// if (!result.recordset){
-		// 	// tasklist = []
-		// } else {
-		// 	for (let index = 0; index < result.recordset.length; index++) {
-		// 		const element = result.recordset[index];
-
-		// 		const newTask = new TaskData(element.finish,element.description,element.done)
-		// 		newTask.id = element.id
-
-		// 		tasklist.push(newTask)
-		// 	}
-		// }
-
 		// // Tratar formato do resultset para a lista de tarefas
 		return result.recordset
 	}
 
-	async pagedQuery(fields, table, where, orderBy, pageNumber, pageSize) {
+	/**
+	 * Consulta paginada no banco. 
+	 * 
+	 * Samples:
+	 * 
+	 * @param {Array<String>} fields - Array com os campos buscados: ["A1_COD", "A1_NOME", "A1_CGC"] 
+	 * @param {string} table - tabela usada na clásula from: "SA1010" 
+	 * @param {Array<object>} join - Array de Objetos contendo as tabelas,campos e valores para join. 
+	 * @param {string} join.table - Tabela de junção: "SA3010"
+	 * @param {string} join.type - Tipo de junção: "inner"
+	 * @param {string} join.on - Objeto contendo as condições do join: {A3_COD: 'A1_COD'}
+	 * @param {object} where - Contém um objeto contendo os campos e valores buscados: {A1_COD: '0001', A1_NOME: 'Fulano'}
+	 * @param {string} orderBy - Campo usado para ordenação: "A1_COD" 
+	 * @param {integer} pageNumber - Pagina da query 
+	 * @param {integer} pageSize - Tamanho da página 
+	 * @returns 
+	 */
+	async buildQuery({ fields, table, join, where, orderBy, pageNumber = 1, pageSize = 10, paged = true }) {
 
 		const whereArr = Object.entries(where)
 		const isThereWhere = !!where && whereArr.length > 0
@@ -66,20 +103,41 @@ class dbConn {
 		const request = this.pool.request()
 
 		const fieldsStt = fields.map(f => `${f}`).join(', ')
-		let whereStt = '1=1'
+		let joinStt = ''
 
-		request.input('pageNumber', sql.Int, pageNumber)
-		request.input('pageSize', sql.Int, pageSize)
+		if (join instanceof Array)
+			join.forEach(aJoin => {
 
+				if (!!aJoin && !!aJoin.table && !!aJoin.on) {
+					const type = !!aJoin.type ? aJoin.type : 'inner'
+
+					joinStt = ` ${type} JOIN ${aJoin.table} ON `
+
+					const onArr = Object.entries(aJoin.on)
+					joinStt += onArr.map(([key, value]) => `${key} = ${value}`).join(' AND ')
+
+				}
+			})
+
+		let pagedStt = ''
+		if (paged) {
+			request.input('pageNumber', sql.Int, pageNumber)
+			request.input('pageSize', sql.Int, pageSize)
+			pagedStt =
+				`OFFSET @pageSize * (@pageNumber - 1) ROWS
+			FETCH NEXT @pageSize ROWS ONLY`
+		}
+
+		let whereStt = ''
 		if (isThereWhere) {
 
 			// Tratamento contra SQL Injection das condições enviadas no parametro 'Where' 
-			
+
 			whereStt = whereArr
 				.map(condition => {
 					const [prop, value] = condition
 					request.input(prop, sql.VarChar, value)
-					return `${prop} = @${prop}`
+					return `${table}.${prop} = @${prop}`
 
 				})
 				.join(' AND ')
@@ -91,10 +149,10 @@ class dbConn {
 		const query = `
 			SELECT ${fieldsStt}
 			FROM ${table}
+			${(joinStt.trim() === '' ? '' : joinStt)}
 			${(isThereWhere ? `WHERE ${whereStt}` : '')}
-			ORDER BY ${orderBy}
-		    OFFSET @pageSize * (@pageNumber - 1) ROWS
-			FETCH NEXT @pageSize ROWS ONLY
+			ORDER BY ${table}.${orderBy}
+		    ${pagedStt}
 		`
 
 		console.log(`Query: ${query}`);
