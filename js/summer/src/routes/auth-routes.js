@@ -4,10 +4,12 @@ import taskController from "../controllers/task/taskControllers.js"
 import authMiddleware from "./middleware/auth-middleware.js"
 import { logMessage } from "../utils/log-generator.js";
 
-import ordersController from "../controllers/orders/orders-controller.js"
+import ordersRoute from "./orders/orders-routes.js"
 
 const router = express.Router();
 router.use(authMiddleware)
+
+router.use(ordersRoute);
 
 router.post('/newUser', async(req, res) => {
 	
@@ -57,23 +59,6 @@ router.post('/newTaskSimulador', async (req, res) => {
 		res.error(500, error, 'Failure on add Simulador task')
 	}
 });
-
-
-router.get('/orders', async (req, res) => {
-	
-	try {
-		logMessage(`Requisition: /orders Params: ${JSON.stringify(req.query)}`)
-		const ordersList = await ordersController.getAllOrders(req.query)
-		logMessage(`orders List retrieved successful`)
-
-		res.success(ordersList, 'consult proceed successful.')
-
-
-	} catch (error) {
-		res.error(500, error, 'Failure on getting orders')
-	}
-});
-
 
 
 export default router;

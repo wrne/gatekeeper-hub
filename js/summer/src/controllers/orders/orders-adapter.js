@@ -2,7 +2,8 @@ const mappingFieldsOrders = {
 	emitDate: "Z2_EMISSAO",
 	client: "Z2_CLIENTE",
 	orderNumber: "Z2_NUM",
-	priceTable: "Z2_TABELA"
+	priceTable: "Z2_TABELA",
+	id: "Z2_NUM"
 }
 
 export default mappingFieldsOrders 
