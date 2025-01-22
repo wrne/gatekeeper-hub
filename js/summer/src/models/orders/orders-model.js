@@ -1,4 +1,6 @@
 import dbConn from "../../infra/db/database-connection.js";
+import remapObject from "../../utils/remap-fields-obj.js";
+import {mappingDBFieldsOrders} from '../../controllers/orders/orders-adapter.js'
 
 async function searchAllOrders(filters, withItems, pageNumber, pageSize) {
 
@@ -23,9 +25,13 @@ async function searchAllOrders(filters, withItems, pageNumber, pageSize) {
 	}
 
 
-	if (!returnWithItems)
-		return conn.buildQuery(params)
-	else {
+	if (!returnWithItems){
+
+		const resultOrdersQuery = await conn.buildQuery(params)
+		
+		return remapObject(resultOrdersQuery, mappingDBFieldsOrders)
+
+	} else {
 		const resultOrdersQuery = await conn.buildQuery(params)
 
 		const ordersNumbers = resultOrdersQuery.map(order => `'${order.Z2_NUM}'`).join(',')

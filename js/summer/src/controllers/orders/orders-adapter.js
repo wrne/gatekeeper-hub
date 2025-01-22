@@ -6,4 +6,14 @@ const mappingFieldsOrders = {
 	id: "Z2_NUM"
 }
 
-export default mappingFieldsOrders 
+const mappingDBFieldsOrders = {
+	Z2_NUM: "orderNumber",
+	Z2_EMISSAO: "emitDate",
+	Z2_CLIENTE: "customerId",
+	Z2_LOJACLI: "customerStore",
+	Z3_PRODUTO: "product",
+	Z3_QTDVEN: "amout", 
+	Z3_VALOR: "value"
+}
+
+export {mappingFieldsOrders , mappingDBFieldsOrders}

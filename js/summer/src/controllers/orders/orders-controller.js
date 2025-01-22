@@ -1,5 +1,5 @@
 import ordersModel from '../../models/orders/orders-model.js'
-import mappingFieldsOrders from './orders-adapter.js'
+import {mappingFieldsOrders} from './orders-adapter.js'
 
 async function getAllOrders(filter, params = {}) {
 
