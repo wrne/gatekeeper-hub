@@ -5,11 +5,13 @@ import authMiddleware from "./middleware/auth-middleware.js"
 import { logMessage } from "../utils/log-generator.js";
 
 import ordersRoute from "./orders/orders-routes.js"
+import creditRoute from "./credit/credit-routes.js"
 
 const router = express.Router();
 router.use(authMiddleware)
 
 router.use(ordersRoute);
+router.use(creditRoute);
 
 router.post('/newUser', async(req, res) => {
 	

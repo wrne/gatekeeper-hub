@@ -51,6 +51,28 @@ async function createTable() {
 }
 
 /**
+ * Função que cria a view de saldo de limite atual do crédito.
+ */
+async function createCreditView() {
+
+	const db = new dbConn();
+	const createViewStt = `
+	create or alter View Credit_actualLimit  As
+	select ZZH_GRPVEN GRUPO_ECONOMICO, ZZH_SAFRA SAFRA, iif(ZZH_MOEDLC=1, 'BRL','USD') MOEDA, ZZH_SLDDUP DUPLICATAS, ZZH_SLDPED PEDIDOS_PENDENTES,
+	              iif(ZZH_LIMDIS + ZZH_LIMCLE > ZZH_LIMPOT,ZZH_LIMPOT,ZZH_LIMDIS + ZZH_LIMCLE)
+	                  +iif(ZZH_LIMMAN>0 And ZZH_VIGTMP>Convert(VARCHAR(8),getDate(),112),ZZH_LIMMAN,0 )
+	                  - ZZH_SLDDUP
+	                  - ZZH_SLDPED SALDO_LIMITE_ATUAL
+	  from ZZH010
+	 where D_E_L_E_T_ = ''
+	   and ZZH_SAFRA <> ''
+	   and ZZH_MSBLQL <> '1';
+	`
+
+	await db.exec(createViewStt);
+}	
+
+/**
  * Função que cria a estrutura de fila no RabbitMQ.
  * No formato atual um Exchange de pedidos é criado. Ele deve ser durável para que mesmo que não haja subscriber ativo as mensagens não sejam perdidas.
  * O exchange de pedidos possui duas rotas: "agrega" e "simulador" para indicar as filas correspondentes e tratamento adequado para cada uma.
@@ -108,6 +130,7 @@ async function createQueuesStructure() {
 
 
 createTable();
+createCreditView();
 createQueuesStructure();
 
 setTimeout(function () {
