@@ -2,6 +2,14 @@ import dbConn from "../../infra/db/database-connection.js";
 import remapObject from "../../utils/remap-fields-obj.js";
 import {mappingDBFieldsOrders} from '../../controllers/orders/orders-adapter.js'
 
+/**
+ * Busca todos os pré-pedidos de venda de acordo com os filtros informados
+ * @param {Object} filters Objeto com os filtros para a consulta no formato {campo: valor}
+ * @param {Boolean} withItems Informa se o retorno deve informar os itens do pedido
+ * @param {Number} pageNumber Número da pagina da consulta
+ * @param {Number} pageSize Quantos registros serão retornados na página
+ * @returns Array de objetos com a listagem dos pedidos
+ */
 async function searchAllOrders(filters, withItems, pageNumber, pageSize) {
 
 	const conn = new dbConn()
@@ -28,7 +36,7 @@ async function searchAllOrders(filters, withItems, pageNumber, pageSize) {
 	if (!returnWithItems){
 
 		const resultOrdersQuery = await conn.buildQuery(params)
-		
+
 		return remapObject(resultOrdersQuery, mappingDBFieldsOrders)
 
 	} else {

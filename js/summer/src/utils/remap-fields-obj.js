@@ -18,6 +18,13 @@ function remapObject(any, mapping) {
 
 }
 
+/**
+ * Função que efetivamente recri o objeto com as novas propriedades.
+ * @param {Object} obj - O objeto original.
+ * @param {Object} mapping - O objeto de mapeamento, onde a chave é a propriedade original e o valor é a nova propriedade.
+ * @returns {Object} - O novo objeto com as propriedades renomeadas.
+
+ */
 function remap(obj, mapping) {
     const newObj = {};
     for (const prop in obj) {

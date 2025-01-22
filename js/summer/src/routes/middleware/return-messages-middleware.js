@@ -1,7 +1,7 @@
 import { logError } from "../../utils/log-generator.js"
 
 /**
- * Middleware para adicionar funções customizadas ao objeto `res`.
+ * Middleware para adicionar funções customizadas ao objeto `res`. Ele vai adicionar as funções `success` e `error` ao objeto `res` para padronizar o objeto de retorno da requisição. 
  * @param {import('express').Request} req - Objeto de solicitação HTTP.
  * @param {import('express').Response} res - Objeto de resposta HTTP.
  * @param {import('express').NextFunction} next - Função para chamar o próximo middleware.

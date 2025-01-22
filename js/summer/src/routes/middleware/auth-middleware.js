@@ -2,7 +2,9 @@ import AuthUtils from "../../utils/auth-utils.js"
 import authController from "../../controllers/auth/login-controllers.js";
 import {logMessage} from "../../utils/log-generator.js";
 
-// Middleware que será aplicado somente ao grupo de rotas
+/**
+ * Middleware de autenticação que verifica se o token JWT enviado na requisição é válido
+ */
 export default async function authMiddleware(req, res, next) {
 
 	console.log(`Request URL: ${req.originalUrl}`)

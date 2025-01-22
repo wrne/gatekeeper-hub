@@ -19,9 +19,13 @@ const app = express();
 app.use(bodyParser.json());
 app.use(responseFormatter);
 app.use(helmet());
+
+// Rota para a documentação da API
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+// Rotas que não necesistam autenticação
 app.use( noAuthRoutes );
+// Rotas que necessitam autenticação
 app.use( authRoutes );
 
 export default app;
