@@ -1,14 +1,14 @@
 function logError(errorMessage, error){
 
-	const reqDate = new Date()		
-	console.error(`${reqDate.toISOString()}: ${errorMessage}|\n${error.stack}`);
+	const reqDate = new Date().toLocaleString()		
+	console.error(`${reqDate}: ${errorMessage}|\n${error.stack}`);
 
 }
 
 function logMessage(message){
 
-	const reqDate = new Date()
-	console.info(`${reqDate.toISOString()}: ${message}`);
+	const reqDate = new Date().toLocaleString()	
+	console.info(`${reqDate}: ${message}`);
 
 }
 

@@ -7,8 +7,6 @@ import {logMessage} from "../../utils/log-generator.js";
  */
 export default async function authMiddleware(req, res, next) {
 
-	console.log(`Request URL: ${req.originalUrl}`)
-	console.log(`Request Method: ${req.method}`)
 	// console.log(`Request Header: ${req.headers.authorization}`)
 
 	// Verifica se o cabeçalho Authorization existe

@@ -11,7 +11,7 @@ const router = express.Router();
 router.get('/orders', async (req, res) => {
 	
 	try {
-		logMessage(`Requisition: /orders Params: ${JSON.stringify(req.query)}`)
+		
 		const ordersList = await ordersController.getAllOrders(req.query)
 		logMessage(`orders List retrieved successful`)
 
@@ -30,7 +30,7 @@ router.get('/orders', async (req, res) => {
 router.get('/orders/items', async (req, res) => {
 	
 	try {
-		logMessage(`Requisition: /orders Params: ${JSON.stringify(req.query)}`)
+		
 		const ordersList = await ordersController.getAllOrders(req.query, {withItems: true})
 		logMessage(`orders List retrieved successful`)
 
@@ -50,7 +50,7 @@ router.get('/orders/:id', async (req, res) => {
 	
 	try {
 		
-		logMessage(`Requisition: /orders Params: ${JSON.stringify(req.params)}`)
+		
 		const [order] = await ordersController.getAllOrders({id: req.params.id})
 		logMessage(`order retrieved successful`)
 
@@ -68,7 +68,7 @@ router.get('/orders/:id/items', async (req, res) => {
 	
 	try {
 		
-		logMessage(`Requisition: /orders Params: ${JSON.stringify(req.params)}`)
+		
 		const [order] = await ordersController.getAllOrders({id: req.params.id}, {withItems: true})
 		logMessage(`order retrieved successful`)
 

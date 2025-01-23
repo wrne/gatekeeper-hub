@@ -2,6 +2,7 @@ import express from "express";
 import authController from "../controllers/auth/login-controllers.js"
 import taskController from "../controllers/task/taskControllers.js"
 import authMiddleware from "./middleware/auth-middleware.js"
+import loggerMiddleware from "./middleware/logger-middleware.js"
 import { logMessage } from "../utils/log-generator.js";
 
 import ordersRoutes from "./orders/orders-routes.js"
@@ -10,6 +11,7 @@ import paymentsRoutes from "./payments/payments-routes.js"
 
 const router = express.Router();
 router.use(authMiddleware)
+router.use(loggerMiddleware)
 
 router.use(ordersRoutes);
 router.use(creditRoutes);

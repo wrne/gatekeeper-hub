@@ -155,7 +155,7 @@ class dbConn {
 		    ${pagedStt}
 		`
 
-		console.log(`Query: ${query}`);
+		// console.info(`Query: ${query}`);
 
 		const result = await request.query(query)
 
