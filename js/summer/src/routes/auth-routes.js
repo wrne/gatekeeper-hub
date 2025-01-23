@@ -8,6 +8,7 @@ import { logMessage } from "../utils/log-generator.js";
 import ordersRoutes from "./orders/orders-routes.js"
 import creditRoutes from "./credit/credit-routes.js"
 import paymentsRoutes from "./payments/payments-routes.js"
+import pricesRoutes from "./prices/prices-routes.js"
 
 const router = express.Router();
 router.use(authMiddleware)
@@ -16,6 +17,7 @@ router.use(loggerMiddleware)
 router.use(ordersRoutes);
 router.use(creditRoutes);
 router.use(paymentsRoutes);
+router.use(pricesRoutes);
 
 router.post('/newUser', async(req, res) => {
 	

@@ -51,12 +51,18 @@ async function createTable() {
 }
 
 /**
- * Função que cria a view de saldo de limite atual do crédito.
+ * Função que cria as views: 
+ * - Saldo de limite atual do crédito
+ * - Tabelas de Preço ativas
  */
-async function createCreditView() {
+async function createViews() {
 
 	const db = new dbConn();
-	const createViewStt = `
+
+	// ----------------------------------------------------------------------
+	// View de saldo de limite atual do crédito
+	// ----------------------------------------------------------------------
+	let createViewStt = `
 	create or alter View Credit_actualLimit  As
 	select ZZH_GRPVEN GRUPO_ECONOMICO, ZZH_SAFRA SAFRA, iif(ZZH_MOEDLC=1, 'BRL','USD') MOEDA, ZZH_SLDDUP DUPLICATAS, ZZH_SLDPED PEDIDOS_PENDENTES,
 	              iif(ZZH_LIMDIS + ZZH_LIMCLE > ZZH_LIMPOT,ZZH_LIMPOT,ZZH_LIMDIS + ZZH_LIMCLE)
@@ -70,6 +76,23 @@ async function createCreditView() {
 	`
 
 	await db.exec(createViewStt);
+	
+	// ----------------------------------------------------------------------
+	// View de tabelas de preço ativas
+	// ----------------------------------------------------------------------
+	createViewStt = `
+	create or alter view active_price_tables as
+	select DA0_CODTAB CODIGO_TABELA, DA0_DESCRI DESCRICAO, DA0_XSAFRA SAFRA
+	  from DA0010 DA0
+	 where DA0.D_E_L_E_T_ = ''
+	   and Convert(Varchar(8), getdate(), 112) between DA0_DATDE And DA0_DATATE
+	   and Convert(Varchar(8), getdate(), 112) between DA0_XDECAR And DA0_XATECA
+	   and DA0_ATIVO = '1'
+	`
+
+	await db.exec(createViewStt);
+
+	
 }	
 
 /**
@@ -130,7 +153,7 @@ async function createQueuesStructure() {
 
 
 createTable();
-createCreditView();
+createViews();
 createQueuesStructure();
 
 setTimeout(function () {
