@@ -4,14 +4,16 @@ import taskController from "../controllers/task/taskControllers.js"
 import authMiddleware from "./middleware/auth-middleware.js"
 import { logMessage } from "../utils/log-generator.js";
 
-import ordersRoute from "./orders/orders-routes.js"
-import creditRoute from "./credit/credit-routes.js"
+import ordersRoutes from "./orders/orders-routes.js"
+import creditRoutes from "./credit/credit-routes.js"
+import paymentsRoutes from "./payments/payments-routes.js"
 
 const router = express.Router();
 router.use(authMiddleware)
 
-router.use(ordersRoute);
-router.use(creditRoute);
+router.use(ordersRoutes);
+router.use(creditRoutes);
+router.use(paymentsRoutes);
 
 router.post('/newUser', async(req, res) => {
 	
