@@ -155,7 +155,10 @@ class dbConn {
 		    ${pagedStt}
 		`
 
-		// console.info(`Query: ${query}`);
+		if (process.summer.MODE === 'development'){
+			console.info(`Query: ${query}`);
+
+		}
 
 		const result = await request.query(query)
 
@@ -181,6 +184,51 @@ class dbConn {
 			return rs?.rowsAffected
 
 		})
+
+	}
+
+	async getTotalPages({ table, where, pageSize }) {
+		
+		const whereArr = Object.entries(where)
+		const isThereWhere = !!where && whereArr.length > 0
+
+		if (!this.pool)
+			this.pool = await sql.connect(this.sqlConfig)
+
+		const request = this.pool.request()
+
+		let whereStt = ''
+		if (isThereWhere) {
+
+			if (where instanceof Object) {
+			
+				// Tratamento contra SQL Injection das condições enviadas no parametro 'Where' 
+				
+				whereStt = whereArr
+				.map(condition => {
+					const [prop, value] = condition
+					request.input(prop, sql.VarChar, value)
+					return `${table}.${prop} = @${prop}`
+					
+				})
+				.join(' AND ')
+			} else if (where instanceof String) {
+				
+				whereStt = where
+			}
+		}
+
+		const query = `
+			SELECT COUNT(*) as total
+			FROM ${table}
+			${(isThereWhere ? `WHERE ${whereStt}` : '')}
+		`
+
+		const result = await request.query(query)
+
+		const total = result.recordset[0].total
+
+		return Math.ceil(total / pageSize)
 
 	}
 
