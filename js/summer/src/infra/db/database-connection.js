@@ -130,17 +130,16 @@ class dbConn {
 
 		let whereStt = ''
 		if (isThereWhere) {
-
-			// Tratamento contra SQL Injection das condições enviadas no parametro 'Where' 
-
-			whereStt = whereArr
-				.map(condition => {
-					const [prop, value] = condition
-					request.input(prop, sql.VarChar, value)
-					return `${table}.${prop} = @${prop}`
-
-				})
-				.join(' AND ')
+			if (where instanceof Object) {
+			
+				// Tratamento contra SQL Injection das condições enviadas no parametro 'Where' 
+				
+				whereStt = await buildWhereStt(request, table, whereArr)
+				
+			} else if (where instanceof String) {
+				
+				whereStt = where
+			}
 		}
 
 		if (!orderBy)
@@ -157,7 +156,6 @@ class dbConn {
 
 		if (process.summer.MODE === 'development'){
 			console.info(`Query: ${query}`);
-
 		}
 
 		const result = await request.query(query)
@@ -204,14 +202,8 @@ class dbConn {
 			
 				// Tratamento contra SQL Injection das condições enviadas no parametro 'Where' 
 				
-				whereStt = whereArr
-				.map(condition => {
-					const [prop, value] = condition
-					request.input(prop, sql.VarChar, value)
-					return `${table}.${prop} = @${prop}`
-					
-				})
-				.join(' AND ')
+				whereStt = await buildWhereStt(request, table, whereArr)
+
 			} else if (where instanceof String) {
 				
 				whereStt = where
@@ -232,6 +224,37 @@ class dbConn {
 
 	}
 
+}
+
+async function buildWhereStt(request, table, whereArr){
+	
+	// Tratamento contra SQL Injection das condições enviadas no parametro 'Where' 
+
+	const whereStt = 
+		whereArr
+		.map(condition => {
+			let [prop, value] = condition
+
+			let operator = '='
+			let content = value
+			
+			if (value instanceof Object) {
+
+				const { operator: op, value: val } = value
+
+				operator = op
+				content = val
+				
+			} 
+
+			request.input(prop, sql.NVarChar, content)
+			
+			return `${table}.${prop} ${operator} @${prop}`
+
+		})
+		.join(' AND ')
+
+	return whereStt
 }
 
 export default dbConn
