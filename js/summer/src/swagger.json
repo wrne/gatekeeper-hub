@@ -689,6 +689,121 @@
 				}
 			}
 		},
+		"/customers": {
+			"get": {
+				"summary": "Get a list of customers",
+				"description": "Get a list of active customers from the ERP.",
+				"tags": [
+					"Customers"
+				],
+				"parameters": [
+					{
+						"name": "pageSize",
+						"in": "query",
+						"description": "The number of registries to return",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"minimum": 1
+						}
+					},
+					{
+						"name": "pageNumber",
+						"in": "query",
+						"description": "Control of pagination on search",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"minimum": 1
+						}
+					},
+					{
+						"name": "state",
+						"in": "query",
+						"description": "Filter by a specific state of the federation.",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "name",
+						"in": "query",
+						"description": "Search for customers whose name contains the text entered.",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "economicGroup",
+						"in": "query",
+						"description": "Filter by a specific economic group.",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "A list of customers according to the filters parameters",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Customer"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/customers/:id": {
+			"get": {
+				"summary": "Get a customer from ERP base",
+				"description": "Get the details of a specific customer",
+				"tags": [
+					"Customers"
+				],
+				"parameters": [					
+					{
+						"name": "idPlusStore",
+						"in": "path",
+						"description": "The ID and store of the specific customer to search for.",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "The details of a specific customer",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Customer"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
 		"/login": {
 			"post": {
 				"summary": "Login for testing",
@@ -897,6 +1012,41 @@
 						"items": {
 							"$ref": "#/components/schemas/PriceTableItem"
 						}
+					}
+				}
+			},
+			"Customer": {
+				"type": "object",
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"store": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"type": {
+						"type": "string"
+					},
+					"idDocument": {
+						"type": "string"
+					},
+					"state": {
+						"type": "string"
+					},
+					"city": {
+						"type": "string"
+					},
+					"farm": {
+						"type": "string"
+					},
+					"economicGroup": {
+						"type": "string"
 					}
 				}
 			}

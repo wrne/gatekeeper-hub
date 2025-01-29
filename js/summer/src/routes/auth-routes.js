@@ -9,15 +9,18 @@ import ordersRoutes from "./orders/orders-routes.js"
 import creditRoutes from "./credit/credit-routes.js"
 import paymentsRoutes from "./payments/payments-routes.js"
 import pricesRoutes from "./prices/prices-routes.js"
+import customersRoutes from "./customers/customers-routes.js"
 
 const router = express.Router();
-router.use(authMiddleware)
-router.use(loggerMiddleware)
+
+router.use(authMiddleware)	// Middleware de autenticação
+router.use(loggerMiddleware)// Middleware de logging
 
 router.use(ordersRoutes);
 router.use(creditRoutes);
 router.use(paymentsRoutes);
 router.use(pricesRoutes);
+router.use(customersRoutes);
 
 router.post('/newUser', async(req, res) => {
 	
