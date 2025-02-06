@@ -8,7 +8,7 @@ const router = express.Router();
 /**
  * Rota de Consulta de limites de crédito - Listagem de acordo com os filtros
  */
-router.get('/credit', async (req, res) => {
+router.get('/', async (req, res) => {
 	
 	try {
 		
@@ -28,7 +28,7 @@ router.get('/credit', async (req, res) => {
 /**
  * Rota de Consulta de limite de credito por ID do grupo economico
  */
-router.get('/credit/:grupo', async (req, res) => {
+router.get('/:grupo', async (req, res) => {
 	
 	try {
 		

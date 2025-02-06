@@ -4,11 +4,10 @@ import {getAllPayments} from "../../controllers/payments/payments-controller.js"
 import { logMessage } from "../../utils/log-generator.js";
 
 const router = express.Router();
-
 /**
  * Rota de Consulta de Pagamentos - Listagem de acordo com os filtros
  */
-router.get('/payments', async (req, res) => {
+router.get('/', async (req, res) => {
 	
 	try {
 		
@@ -28,7 +27,7 @@ router.get('/payments', async (req, res) => {
 /**
  * Rota de Consulta de pagamentos por ID do cliente
  */
-router.get('/payments/:client', async (req, res) => {
+router.get('/:client', async (req, res) => {
 	
 	try {
 		

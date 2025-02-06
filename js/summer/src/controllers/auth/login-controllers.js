@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import dbConn from "../../infra/db/database-connection.js"
-import AuthUtils from "../../utils/auth-utils.js"
+import {buildHashPwdAndSalt,validPassword,gerarTokenJWT} from "../../utils/auth-utils.js"
 import { logMessage } from '../../utils/log-generator.js';
 
 const db = new dbConn();
@@ -8,7 +8,7 @@ const db = new dbConn();
 function newUser({login, password, name}){
 	
 	const uudi = uuidv4()
-	const { salt, hash } = AuthUtils.buildHashPwdAndSalt(password);
+	const { salt, hash } = buildHashPwdAndSalt(password);
 
 	// console.log(`salt: ${salt} || hash: ${hash}`);
 
@@ -27,7 +27,7 @@ async function authUser({login, password}){
 		const [hash,salt] = rsHashAndSalt[0].password.split(':')
 		// console.log(`obtido: salt: ${salt} || hash: ${hash}`);
 		
-		const isValidPassword = AuthUtils.validPassword(password, salt, hash)
+		const isValidPassword = validPassword(password, salt, hash)
 		
 		if (!isValidPassword){
 
@@ -37,7 +37,7 @@ async function authUser({login, password}){
 
 		logMessage(`User autenticated: ${login}`);
 		
-		return AuthUtils.gerarTokenJWT({login})
+		return gerarTokenJWT({login})
 		
 	}
 	

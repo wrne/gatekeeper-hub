@@ -8,7 +8,7 @@ const router = express.Router();
 /**
  * Rota de Consulta de Tabelas de Preço - Listagem de acordo com os filtros sem os itens
  */
-router.get("/prices", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const priceList = await priceController.getAllPriceTables(req.query);
     logMessage(`price list retrieved successful`);
@@ -22,7 +22,7 @@ router.get("/prices", async (req, res) => {
 /**
  * Rota de Consulta de pedidos - Listagem de acordo com os filtros com os itens
  */
-router.get("/prices/items", async (req, res) => {
+router.get("/items", async (req, res) => {
   try {
     const priceList = await priceController.getAllPriceTables(req.query, {
       withItems: true,
@@ -38,7 +38,7 @@ router.get("/prices/items", async (req, res) => {
 /**
  * Rota de Consulta de tabela de preço por ID. Retorna a tabela de preço com os itens
  */
-router.get("/prices/:table/items", async (req, res) => {
+router.get("/:table/items", async (req, res) => {
   try {
     const [price] = await priceController.getAllPriceTables(
       { table: req.params.table },
@@ -55,7 +55,7 @@ router.get("/prices/:table/items", async (req, res) => {
 /**
  * Rota de Consulta de preço de um unico produto.
  */
-router.get("/prices/:table/item/:product", async (req, res) => {
+router.get("/:table/item/:product", async (req, res) => {
   try {
 	
     const [price] = await priceController.getProductPrice({

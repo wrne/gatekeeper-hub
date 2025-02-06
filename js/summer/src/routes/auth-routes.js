@@ -2,7 +2,7 @@ import express from "express";
 import authController from "../controllers/auth/login-controllers.js"
 import taskController from "../controllers/task/taskControllers.js"
 import authMiddleware from "./middleware/auth-middleware.js"
-import loggerMiddleware from "./middleware/logger-middleware.js"
+import autorizateMiddleware from "./middleware/autorization-middleware.js"
 import { logMessage } from "../utils/log-generator.js";
 
 import ordersRoutes from "./orders/orders-routes.js"
@@ -14,15 +14,15 @@ import customersRoutes from "./customers/customers-routes.js"
 const router = express.Router();
 
 router.use(authMiddleware)	// Middleware de autenticação
-router.use(loggerMiddleware)// Middleware de logging
 
-router.use(ordersRoutes);
-router.use(creditRoutes);
-router.use(paymentsRoutes);
-router.use(pricesRoutes);
-router.use(customersRoutes);
+router.use('/orders',autorizateMiddleware(['admin','agrega']),ordersRoutes);
+router.use('/credit',autorizateMiddleware(['admin','agrega']),creditRoutes);
+router.use('/payments',autorizateMiddleware(['admin','agrega']),paymentsRoutes);
+router.use('/prices',autorizateMiddleware(['admin','agrega']),pricesRoutes);
+router.use('/customers',autorizateMiddleware(['admin','agrega']),customersRoutes);
 
-router.post('/newUser', async(req, res) => {
+
+router.post('/newUser',autorizateMiddleware(['admin']), async(req, res) => {
 	
 	try {
 		const usersAdded = authController.newUser(req.body)

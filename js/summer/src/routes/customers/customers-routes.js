@@ -8,7 +8,7 @@ const router = express.Router();
 /**
  * Rota de Consulta de Clientes - Listagem de acordo com os filtros
  */
-router.get('/customers', async (req, res) => {
+router.get('/', async (req, res) => {
 	
 	try {
 		
@@ -28,7 +28,7 @@ router.get('/customers', async (req, res) => {
 /**
  * Rota de Consulta de clientes por ID
  */
-router.get('/customers/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
 	
 	try {
 		const id = req.params.id.slice(0,6)

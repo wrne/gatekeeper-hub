@@ -1,4 +1,4 @@
-import AuthUtils from "../../utils/auth-utils.js"
+import {verifyTokenJWT} from "../../utils/auth-utils.js"
 import authController from "../../controllers/auth/login-controllers.js";
 import {logMessage} from "../../utils/log-generator.js";
 
@@ -30,7 +30,7 @@ export default async function authMiddleware(req, res, next) {
 
 	try {
 
-		const {login} = await AuthUtils.verifyTokenJWT(token)
+		const {login} = await verifyTokenJWT(token)
 
 		// Verificando a validade do token
 		if (!!login) {

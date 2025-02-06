@@ -8,7 +8,7 @@ const router = express.Router();
 /**
  * Rota de Consulta de pedidos - Listagem de acordo com os filtros
  */
-router.get('/orders', async (req, res) => {
+router.get('/',async (req, res) => {
 	
 	try {
 		
@@ -27,7 +27,7 @@ router.get('/orders', async (req, res) => {
 /**
  * Rota de Consulta de pedidos - Listagem de acordo com os filtros
  */
-router.get('/orders/items', async (req, res) => {
+router.get('/items', async (req, res) => {
 	
 	try {
 		
@@ -46,7 +46,7 @@ router.get('/orders/items', async (req, res) => {
 /**
  * Rota de Consulta de pedido por ID
  */
-router.get('/orders/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
 	
 	try {
 		
@@ -64,7 +64,7 @@ router.get('/orders/:id', async (req, res) => {
 /**
  * Rota de Consulta de pedido por ID com Itens
  */
-router.get('/orders/:id/items', async (req, res) => {
+router.get('/:id/items', async (req, res) => {
 	
 	try {
 		

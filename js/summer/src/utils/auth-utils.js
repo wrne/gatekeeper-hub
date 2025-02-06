@@ -1,3 +1,4 @@
+import dbConn from "../infra/db/database-connection.js";
 import {randomBytes, scryptSync, timingSafeEqual } from "crypto";
 import jwt from "jsonwebtoken";
 
@@ -8,10 +9,6 @@ function buildHashPwdAndSalt(password){
 	// console.log(`salt: ${salt} || hash: ${hash}`);
 	
 	return { salt, hash }
-}
-
-function getHashPasswordFromDB(passwordAndSaltFromDB){
-
 }
 
 function validPassword(passwordTested, salt, password){
@@ -44,4 +41,26 @@ async function verifyTokenJWT(tokenToValidate){
 
 }
 
-export default {buildHashPwdAndSalt, validPassword, gerarTokenJWT, verifyTokenJWT}
+/**
+ * Retorna o papel do usuário cadastrado na base
+ * @param {caracter} login 
+ * @returns role - papel do usuario cadastrado na base
+ */
+async function getRolebyUser(login){
+
+	const conn = new dbConn()
+
+	// Busca no banco de dados o papel do usuário informado
+	const queryStt = `
+	Select role
+	  From summer_users users
+	 Where login = '${login}'
+	`
+
+	const [result] = await conn.query(queryStt)
+
+	return result.role;
+
+}
+
+export {buildHashPwdAndSalt, validPassword, gerarTokenJWT, verifyTokenJWT, getRolebyUser}
