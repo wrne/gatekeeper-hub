@@ -1,28 +1,29 @@
-import paymentsModel from '../../models/payments/payments-model.js'
-import {mappingFieldsPayments} from './payments-adapter.js'
+import paymentsModel from "../../models/payments/payments-model.js";
+import { mappingFieldsPayments } from "./payments-adapter.js";
 
 async function getAllPayments(filter) {
+  const pageNumber = !filter.page ? 1 : filter.page;
+  const pageSize = !filter.pageSize ? 10 : filter.pageSize;
 
-	const pageNumber = (!filter.page ? 1 : filter.page)
-	const pageSize = (!filter.pageSize ? 10 : filter.pageSize)
+  const filters = {};
 
-	const filters = {};
-	
-	// Retorna um obj com o De/Para de campos entre o filtro da API e o Protheus  
-	const mappingFields = Object.entries(mappingFieldsPayments); 
+  // Retorna um obj com o De/Para de campos entre o filtro da API e o Protheus
+  const mappingFields = Object.entries(mappingFieldsPayments);
 
-	mappingFields.forEach(([fieldReq, fieldProtheus]) => {
+  mappingFields.forEach(([fieldReq, fieldProtheus]) => {
+    // Se um campo mapeado for enviado como parâmetro, ele é adicionado ao filtro
+    if (filter[fieldReq]) filters[fieldProtheus] = filter[fieldReq];
+  });
 
-		// Se um campo mapeado for enviado como parâmetro, ele é adicionado ao filtro
-		if (filter[fieldReq])
-			filters[fieldProtheus] = filter[fieldReq];
+  if (filter.hasOwnProperty("open")) {
+    filters["E1_SALDO"] = {
+      value: 0,
+      operator: ">",
+	  type: 'number'
+    };
+  }
 
-	});
-
-
-	return paymentsModel.searchAllOpenPayments(filters, pageNumber, pageSize)
-
+  return paymentsModel.searchAllPayments(filters, pageNumber, pageSize);
 }
 
-
-export { getAllPayments }
+export { getAllPayments };

@@ -25,6 +25,23 @@ router.get('/', async (req, res) => {
 
 
 /**
+ * Rota de Consulta de pagamentos com saldo em aberto
+ */
+router.get('/open', async (req, res) => {
+	
+	try {
+		
+		const payments = await getAllPayments({open:true,...req.query})
+		logMessage(`payments retrieved successful`)
+
+		res.success(payments, 'consult proceed successful.')
+
+	} catch (error) {
+		res.error(500, error, 'Failure on getting payments')
+	}
+});
+
+/**
  * Rota de Consulta de pagamentos por ID do cliente
  */
 router.get('/:client', async (req, res) => {

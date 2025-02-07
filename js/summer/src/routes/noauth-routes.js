@@ -2,7 +2,7 @@ import express from "express";
 import loginController from "../controllers/auth/login-controllers.js"
 
 import swaggerUi from "swagger-ui-express";
-import swaggerDocument from "./swagger.json"  with { type: 'json' };;
+import swaggerDocument from "../swagger.json"  with { type: 'json' };
 
 const router = express.Router();
 

@@ -9,7 +9,7 @@ import { mappingDBFieldsPayments } from '../../controllers/payments/payments-ada
  * @param {Number} pageSize Quantos registros serão retornados na página
  * @returns Array de objetos com a listagem dos pagamentos em aberto
  */
-async function searchAllOpenPayments(filters, pageNumber, pageSize) {
+async function searchAllPayments(filters, pageNumber, pageSize) {
 
 	const conn = new dbConn()
 	const D_E_L_E_T_ = ''
@@ -37,4 +37,4 @@ async function searchAllOpenPayments(filters, pageNumber, pageSize) {
 
 }
 
-export default { searchAllOpenPayments }
+export default { searchAllPayments }

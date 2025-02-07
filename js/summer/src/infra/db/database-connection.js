@@ -237,17 +237,21 @@ async function buildWhereStt(request, table, whereArr){
 
 			let operator = '='
 			let content = value
+			let type = sql.NVarChar
 			
 			if (value instanceof Object) {
 
-				const { operator: op, value: val } = value
+				const { operator: op, value: val, type: tp } = value
 
 				operator = op
 				content = val
+				if (tp && tp === 'number'){
+					type = sql.Int
+				}
 				
 			} 
 
-			request.input(prop, sql.NVarChar, content)
+			request.input(prop, type, content)
 			
 			return `${table}.${prop} ${operator} @${prop}`
 
