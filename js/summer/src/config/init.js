@@ -104,49 +104,61 @@ async function createQueuesStructure() {
 
 
 	// Exchange de novos pedidos
-	const EXCHANGE_NAME = 'orders_teste';
-	const bindindRouting = [
+	const exchangesDefault = [
 		{
-			// Binding da fila dos pedidos da Agrega
-			queue: "orders_agrega",
-			routingKey: "agrega"
-		},
-		{
-			// Binding da fila dos pedidos do Simulador
-			queue: "orders_simulador",
-			routingKey: "simulador"
+			name: 'orders_teste',
+			bindindRouting: [
+				{
+					// Binding da fila dos pedidos da Agrega
+					queue: "agrega_orders",
+					routingKey: "agrega_orders"
+				},
+				{
+					// Binding da fila dos pedidos do Simulador
+					queue: "agrega_payments",
+					routingKey: "agrega_payments"
+				}
+			]
 		}
 	]
+	
 
 	const amqpConnString = `amqp://${process.env.QUEUE_USER}:${process.env.QUEUE_PWD}@${process.env.QUEUE_HOST}`
 	amqp.connect(amqpConnString, (err, connection) => {
-
+		
 		if (err) {
 			console.error('Erro ao conectar ao RabbitMQ:', err);
 			process.exit(1);
 		}
 
+		console.log(`RabbitMQ| MessageBroker conectado.`);
+		
 		connection.createChannel((err, channel) => {
 			if (err) {
 				console.error('Erro ao criar o canal:', err);
 				process.exit(1);
 			}
+			
+			console.log(`RabbitMQ| Channel criado.`);
 
-			// Declarar um exchange durável
-			channel.assertExchange(EXCHANGE_NAME, 'direct', { durable: true });
-
-			// Binding das filas às RoutingKeys
-			bindindRouting.forEach((binding) => {
-
-				// Declarar uma fila durável
-				channel.assertQueue(binding.queue, { durable: true });
-
-				// Ligar a fila ao exchange
-				channel.bindQueue(binding.queue, EXCHANGE_NAME, binding.routingKey);
-
+			exchangesDefault.forEach((exchange) => {
+				
+				// Declarar um exchange durável
+				channel.assertExchange(exchange.name, 'direct', { durable: true });
+	
+				// Binding das filas às RoutingKeys
+				exchange.bindindRouting.forEach((binding) => {
+	
+					// Declarar uma fila durável
+					channel.assertQueue(binding.queue, { durable: true });
+	
+					// Ligar a fila ao exchange
+					channel.bindQueue(binding.queue, exchange.name, binding.routingKey);
+	
+					console.log(`RabbitMQ| Exchange "${exchange.name}" configurado com a rota ${binding.routingKey}.`);
+				})
 			})
 
-			console.log(`MessageBroker conectado e exchange "${EXCHANGE_NAME}" configurado.`);
 		});
 	});
 }

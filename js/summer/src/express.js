@@ -2,10 +2,10 @@ import express from "express";
 import bodyParser from "body-parser";
 import helmet from "helmet";
 
-import loggerMiddleware from "./routes/middleware/logger-middleware.js"
-import authRoutes from "./routes/auth-routes.js";
-import noAuthRoutes from "./routes/noauth-routes.js";
-import responseFormatter from "./routes/middleware/return-messages-middleware.js"
+import loggerMiddleware from "./middleware/logger-middleware.js"
+import privateRoutes from "./routes/private-routes.js";
+import publicRoutes from "./routes/public-routes.js";
+import responseFormatter from "./middleware/return-messages-middleware.js"
 
 const app = express();
 
@@ -22,8 +22,8 @@ app.use(responseFormatter);
 app.use(loggerMiddleware)// Middleware de logging
 
 // Rotas que não necesistam autenticação
-app.use( noAuthRoutes );
+app.use( publicRoutes );
 // Rotas que necessitam autenticação
-app.use( authRoutes );
+app.use( privateRoutes );
 
 export default app;

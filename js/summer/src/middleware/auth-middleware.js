@@ -1,6 +1,6 @@
-import {verifyTokenJWT} from "../../utils/auth-utils.js"
-import authController from "../../controllers/auth/login-controllers.js";
-import {logMessage} from "../../utils/log-generator.js";
+import {verifyTokenJWT} from "../utils/auth-utils.js"
+import authController from "../controllers/auth/login-controllers.js";
+import {logMessage} from "../utils/log-generator.js";
 
 /**
  * Middleware de autenticação que verifica se o token JWT enviado na requisição é válido

@@ -1,7 +1,7 @@
 function logError(errorMessage, error){
 
 	const reqDate = new Date().toLocaleString()		
-	console.error(`${reqDate}: ${errorMessage}|\n${error.stack}`);
+	console.error(`${reqDate}: ${errorMessage}\n${error.stack}`);
 
 }
 

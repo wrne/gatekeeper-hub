@@ -32,10 +32,7 @@ router.get('/:id', async (req, res) => {
 	
 	try {
 		const id = req.params.id.slice(0,6)
-		const store = req.params.id.slice(6)
-		
-		console.log(`id: ${id} store: ${store}`);
-		
+		const store = req.params.id.slice(6)		
 
 		const [customers] = await getAllCustomers({id, store})
 		logMessage(`customers retrieved successful`)

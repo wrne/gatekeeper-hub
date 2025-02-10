@@ -1,4 +1,4 @@
-import { logError } from "../../utils/log-generator.js"
+import { logError } from "../utils/log-generator.js"
 
 /**
  * Middleware para adicionar funções customizadas ao objeto `res`. Ele vai adicionar as funções `success` e `error` ao objeto `res` para padronizar o objeto de retorno da requisição. 
