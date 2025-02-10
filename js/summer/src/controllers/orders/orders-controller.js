@@ -1,5 +1,6 @@
-import ordersModel from '../../models/orders/orders-model.js'
+import {searchAllOrders, validateNewOrderData} from '../../models/orders/orders-model.js'
 import {mappingFieldsOrders} from './orders-adapter.js'
+import publish from "../../infra/queue/queue-manager.js"
 
 async function getAllOrders(filter, params = {}) {
 
@@ -21,9 +22,27 @@ async function getAllOrders(filter, params = {}) {
 
 	const withItems = params.withItems || false
 
-	return ordersModel.searchAllOrders(filters,withItems, pageNumber, pageSize)
+	return searchAllOrders(filters,withItems, pageNumber, pageSize)
 
 }
 
+async function putNewOrder(origin, data){
 
-export default { getAllOrders }
+	if (origin === 'agrega') {
+
+		const{ order: orderData, payment: paymentData} = data
+
+		// Valida dados do pedido enviados
+		await validateNewOrderData(orderData)
+
+		// Publica dados do pedido na fila de pedido da agrega
+		await publish(process.summer.exchanges.QUEUE_ORDERS,'agrega_orders',orderData)
+		
+		// Publica dados do pagamento na fila pagamentos da agrega
+		await publish(process.summer.exchanges.QUEUE_ORDERS,'agrega_payments',paymentData)
+
+	}
+	
+}
+
+export default { getAllOrders,putNewOrder }

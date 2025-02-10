@@ -2,6 +2,8 @@ import dbConn from "../../infra/db/database-connection.js";
 import remapObject from "../../utils/remap-fields-obj.js";
 import {mappingDBFieldsOrders} from '../../controllers/orders/orders-adapter.js'
 
+import {ProtheusDate} from "../../utils/protheus-utils.js";
+
 /**
  * Busca todos os pré-pedidos de venda de acordo com os filtros informados
  * @param {Object} filters Objeto com os filtros para a consulta no formato {campo: valor}
@@ -90,4 +92,189 @@ async function searchAllOrders(filters, withItems, pageNumber, pageSize) {
 	}
 }
 
-export default { searchAllOrders }
+/**
+ * Valida os dados de um novo pedido de venda antes de ser aceito na base para processamento pelo Protheus.
+ * Caso algum dado esteja inválido, uma exceção será lançada com a descrição da falha identificada.
+ * @param {Object} data Objeto com os dados do pedido candidato a ser inserido
+ * @param {string} data.customerId Código do cliente no Protheus
+ * @param {string} data.customerStore Loja do cliente no Protheus
+ * @param {string} data.priceTable Código da Tabela de Preço
+ * @param {string} data.paymentCondition Código da condição de pagamento
+ * @param {string} data.dueDate Data de vencimento do pedido
+ * @param {Array<Object>} data.items Array de itens do pedido
+ * @param {string} data.items.item Item do pedido
+ * @param {string} data.items.product Código do produto
+ * @param {integer} data.items.quantity Quantidade solicitada
+ */
+async function validateNewOrderData(data){
+
+	const {priceTable, customerId, customerStore, paymentCondition, dueDate, items} = data
+	const D_E_L_E_T_ = ''
+	const hoje = ProtheusDate(new Date())
+	
+	// -------------------------------------------------------------------------
+	// Valida informações obrigatórias
+	// -------------------------------------------------------------------------
+	const requiredInfo = []
+
+	if (!priceTable || priceTable.length == 0 )
+		requiredInfo.push('Price table')
+	
+	if (!customerId || customerId.length == 0 )
+		requiredInfo.push('Customer ID')
+	
+	if (!customerStore || customerStore.length == 0 )
+		requiredInfo.push('Customer store')
+	
+	if (!paymentCondition || paymentCondition.length == 0 )
+		requiredInfo.push('Payment condition')
+	
+	if (!items || items.length == 0)
+		requiredInfo.push('items')
+	
+	
+	if (requiredInfo.length > 0)
+		throw new Error(`Missing required information: ${requiredInfo.join(',')}`)
+	
+	
+	// -------------------------------------------------------------------------
+	// Valida se dados são válidos (existem na base e estão ativos)
+	// -------------------------------------------------------------------------
+
+	// Valida se cliente está ativo --------------------------------------------
+	let filters = {
+		A1_COD: customerId,
+		A1_LOJA: customerStore,
+		A1_MSBLQL: {
+			operator: '<>',
+			value: '1'
+		},
+		... { D_E_L_E_T_ }
+	}
+
+	const resultCustomerQry = await validaRegAtivo('SA1010', filters)
+
+	if (resultCustomerQry.length == 0)
+		requiredInfo.push('Customer')
+
+
+	// Valida se tabela de preços está ativa -----------------------------------
+	filters = {
+		DA0_CODTAB: priceTable,
+		DA0_ATIVO: '1',	
+		DA0_DATDE: {
+			operator: '<=',
+			value: hoje
+		},
+		DA0_DATATE: {
+			operator: '>=',
+			value: hoje
+		},
+		DA0_XDECAR: {
+			operator: '<=',
+			value: hoje
+		},
+		DA0_XATECA: {
+			operator: '>=',
+			value: hoje
+		},
+		... { D_E_L_E_T_ }
+	}
+
+	const resultPriceTableQry = await validaRegAtivo('DA0010', filters)
+
+	if (resultPriceTableQry.length == 0)
+		requiredInfo.push('Price table')
+
+	// Valida se condição de pagamento está ativa ------------------------------
+	filters = {
+		E4_CODIGO: paymentCondition,
+		E4_MSBLQL: {
+			operator: '<>',
+			value: '1'
+		},
+		... { D_E_L_E_T_ }
+	}
+
+	const resultPaymentCondrQry = await validaRegAtivo('SE4010', filters, ['E4_CODIGO','E4_TIPO'])
+
+	if (resultPaymentCondrQry.length == 0)
+		requiredInfo.push('Payment condition')
+	else
+		if (resultPaymentCondrQry[0].E4_TIPO === '9' && (!dueDate || dueDate.length == 0))
+			requiredInfo.push('Due Date')
+
+	
+	if (requiredInfo.length > 0)
+		throw new Error(`${requiredInfo.join(', ')} not found or inactive`)
+
+
+	// -------------------------------------------------------------------------
+	// Valida produtos informados estão ativos ---------------------------------
+	// -------------------------------------------------------------------------
+	const products = [...new Set(items.map(item => item.product))]
+	
+	filters = {
+		B1_COD: {
+			operator: 'In',
+			value: products
+		},
+		B1_MSBLQL: {
+			operator: '<>',
+			value: '1'
+		},
+		... { D_E_L_E_T_ }
+	}
+	
+	const conn = new dbConn()
+
+	const params = {
+		fields: ['B1_COD','B1_MSBLQL','B1_CONV'] ,
+		table: 'SB1010',
+		where: filters,
+		orderBy: 'R_E_C_N_O_',
+		paged: false
+	}
+
+	const resultProductQry = await conn.buildQuery(params) //await validaRegAtivo('SB1010', filters)
+	
+	// Quantidade informada bate com a embalagem do produto --------------------
+	const itemsBroken = []
+		
+	for (const item of items) {
+		
+		if (!resultProductQry.find(prod => prod.B1_COD == item.product)){
+
+			itemsBroken.push({item: item.product, message: 'Product not found or inactive'});
+			continue;
+		}
+
+		if (item.quantity % resultProductQry.find(prod => prod.B1_COD == item.product).B1_CONV != 0)
+			itemsBroken.push({item: item.item, message: 'Requested quantity does not match the product packaging'})
+
+	}
+
+	if (itemsBroken.length > 0)
+		throw new Error(`Invalid items: ${itemsBroken.map(item => `${item.item} - ${item.message}`).join(',')}`)
+
+	// Valida disponibilidade dos produtos
+	
+
+}
+
+async function validaRegAtivo(table, filters, fields = ['1']){
+
+	const conn = new dbConn()
+
+	const params = {
+		fields ,
+		table ,
+		where: filters,
+		orderBy: 'R_E_C_N_O_'
+	}
+
+	return await conn.buildQuery(params)
+
+}
+
+export  { searchAllOrders, validateNewOrderData }

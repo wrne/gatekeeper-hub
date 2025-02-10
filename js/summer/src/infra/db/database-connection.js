@@ -172,7 +172,7 @@ class dbConn {
 		await this.pool.request().query(execStt, (err, rs) => {
 
 			if (!!err) {
-				logError(err)
+				logError('Erro ao executar sql statement.',err)
 				throw new Error(err);
 
 			}
@@ -243,11 +243,28 @@ async function buildWhereStt(request, table, whereArr){
 
 				const { operator: op, value: val, type: tp } = value
 
-				operator = op
-				content = val
 				if (tp && tp === 'number'){
 					type = sql.Int
 				}
+
+				if (val instanceof Array){
+					let content = '('
+
+					val.forEach((v,i) => {
+						request.input(`${i}_${prop}`, type, v)
+						if (i > 0){
+							content += ','
+						}
+						
+						content += `@${i}_${prop}`
+					})
+					content += ')'
+
+					return `${table}.${prop} ${op} ${content}`
+				}
+					
+				operator = op
+				content = val
 				
 			} 
 

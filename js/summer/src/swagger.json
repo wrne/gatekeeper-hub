@@ -105,6 +105,35 @@
 						}
 					}
 				}
+			},
+			"post": {
+				"summary": "Send new order",
+				"description": "Send to ERP the sales orders and financial information about a negotiation.",
+				"tags": [
+					"Orders"
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"order": {
+										"$ref": "#/components/schemas/NewOrderData"
+									},
+									"payment": {
+										"$ref": "#/components/schemas/Payment"
+									}
+								},
+								"required": [
+									"order",
+									"payment"
+								]
+							}
+						}
+					}
+				}
 			}
 		},
 		"/orders/items": {
@@ -1008,6 +1037,59 @@
 					},
 					"customerStore": {
 						"type": "string"
+					}
+				}
+			},
+			"NewOrderData": {
+				"type": "object",
+				"properties": {
+					"customerId": {
+						"type": "string",
+						"description": "Customer ID"
+					},
+					"customerStore": {
+						"type": "string",
+						"description": "Customer Store"
+					},
+					"priceTable": {
+						"type": "string",
+						"description": "Price table id"
+					},
+					"paymentCondition": {
+						"type": "string",
+						"description": "Payment Condition id"
+					},
+					"dueDate": {
+						"type": "string",
+						"description": "Due Date. Format: [AAAAMMDD]"
+					},
+					"items": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+								"item": {
+									"type": "integer",
+									"description": "Item number"
+								},
+								"product": {
+									"type": "string",
+									"description": "Product ID"
+								},
+								"amount": {
+									"type": "integer",
+									"description": "Amount of product"
+								},
+								"price": {
+									"type": "number",
+									"description": "value negotiated for the product"
+								},
+								"deliveryDate": {
+									"type": "string",
+									"description": "Delivery date negotiated for this item. Format: [AAAAMMDD]"
+								}
+							}
+						}
 					}
 				}
 			},

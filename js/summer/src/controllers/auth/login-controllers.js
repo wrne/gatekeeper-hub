@@ -5,14 +5,14 @@ import { logMessage } from '../../utils/log-generator.js';
 
 const db = new dbConn();
 
-function newUser({login, password, name}){
+function newUser({login, password, name, role}){
 	
 	const uudi = uuidv4()
 	const { salt, hash } = buildHashPwdAndSalt(password);
 
 	// console.log(`salt: ${salt} || hash: ${hash}`);
 
-	const insertNewUserStt = `insert into summer_users(id, login, name, password) values ('${uudi}','${login}', '${name}','${hash}:${salt}' )`
+	const insertNewUserStt = `insert into summer_users(id, login, name, password, role) values ('${uudi}','${login}', '${name}','${hash}:${salt}', '${role}' )`
 	return db.exec(insertNewUserStt) > 0
 
 }

@@ -5,6 +5,21 @@ import { logMessage } from "../../utils/log-generator.js";
 
 const router = express.Router();
 
+router.post('/', async (req, res) => {
+
+	try {
+
+		await ordersController.putNewOrder(req.userRole, req.body) // Por ora, usamos o role do usuário para definir a origem de pedido, futuramente podemos criar um mecanismo para mapear isso.
+		logMessage(`Order created successful`)
+		
+		res.success(null, 'Order receipt successful.')
+
+	} catch (error) {
+		res.error(500, error, 'Failure on creating order')
+		
+	}
+});
+
 /**
  * Rota de Consulta de pedidos - Listagem de acordo com os filtros
  */
