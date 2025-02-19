@@ -1,16 +1,14 @@
 {
-  "name": "summer-by-ccab",
+  "name": "conecta-by-ccab",
   "version": "1.0.0",
-  "description": "Api de integração do portal Agrega com o ERP da CCAB",
+  "description": "Middleware de integração com o ERP da CCAB",
   "main": "server.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./src/server.js",
     "dev": "nodemon ./src/server.js --dev-mode",
-    "init_env": "node ./src/config/init.js",
-    "start_summer": "node ./src/server.js",
-    "start_sub": "node ./src/sub.js"
+    "init_env": "node ./src/config/init.js"
   },
   "author": "wrne",
   "license": "ISC",

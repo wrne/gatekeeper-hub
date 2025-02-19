@@ -5,41 +5,45 @@ import { logMessage } from '../../utils/log-generator.js';
 
 const db = new dbConn();
 
-function newUser({login, password, name, role}){
+async function newUser({login, password, name, role}){
 	
 	const uudi = uuidv4()
 	const { salt, hash } = buildHashPwdAndSalt(password);
 
 	// console.log(`salt: ${salt} || hash: ${hash}`);
 
-	const insertNewUserStt = `insert into summer_users(id, login, name, password, role) values ('${uudi}','${login}', '${name}','${hash}:${salt}', '${role}' )`
-	return db.exec(insertNewUserStt) > 0
+	const insertNewUserStt = `insert into ccab_conecta_users(id, login, name, password, role) values ('${uudi}','${login}', '${name}','${hash}:${salt}', '${role}' )`
+	
+	return await db.exec(insertNewUserStt) 
 
 }
 
 async function authUser({login, password}){
 
-	const queryStt = `Select password from summer_users where login = '${login}'`
+	const queryStt = `Select password from ccab_conecta_users where login = '${login}'`
 	const rsHashAndSalt = await db.query(queryStt);
 	
-	if (!!rsHashAndSalt && rsHashAndSalt.length > 0){
-
-		const [hash,salt] = rsHashAndSalt[0].password.split(':')
-		// console.log(`obtido: salt: ${salt} || hash: ${hash}`);
+	if (!rsHashAndSalt || rsHashAndSalt.length < 1){
 		
-		const isValidPassword = validPassword(password, salt, hash)
-		
-		if (!isValidPassword){
-
-			throw new Error("Password incorrect");
-			
-		}
-
-		logMessage(`User autenticated: ${login}`);
-		
-		return gerarTokenJWT({login})
+		throw new Error("User not found");
 		
 	}
+
+	const [hash,salt] = rsHashAndSalt[0].password.split(':')
+	// console.log(`obtido: salt: ${salt} || hash: ${hash}`);
+	
+	const isValidPassword = validPassword(password, salt, hash)
+	
+	if (!isValidPassword){
+
+		throw new Error("Password incorrect");
+		
+	}
+
+	logMessage(`User autenticated: ${login}`);
+	
+	return gerarTokenJWT({login})
+		
 	
 }
 

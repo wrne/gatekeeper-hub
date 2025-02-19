@@ -53,7 +53,7 @@ async function getRolebyUser(login){
 	// Busca no banco de dados o papel do usuário informado
 	const queryStt = `
 	Select role
-	  From summer_users users
+	  From ccab_conecta_users users
 	 Where login = '${login}'
 	`
 

@@ -1,7 +1,7 @@
 {
 	"openapi": "3.0.1",
 	"info": {
-		"title": "Summer by CCAB",
+		"title": "Conecta by CCAB",
 		"version": "1.0.0",
 		"description": "API de integração com o ERP da CCAB",
 		"contact": {

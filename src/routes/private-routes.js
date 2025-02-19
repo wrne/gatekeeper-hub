@@ -25,7 +25,7 @@ router.use('/customers',autorizateMiddleware(['admin','agrega']),customersRoutes
 router.post('/newUser',autorizateMiddleware(['admin']), async(req, res) => {
 	
 	try {
-		const usersAdded = authController.newUser(req.body)
+		const usersAdded = await authController.newUser(req.body) 
 		if (usersAdded < 1)
 			throw new Error("User include failed ");
 		

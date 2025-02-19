@@ -36,10 +36,10 @@ async function putNewOrder(origin, data){
 		await validateNewOrderData(orderData)
 
 		// Publica dados do pedido na fila de pedido da agrega
-		await publish(process.summer.exchanges.QUEUE_ORDERS,'agrega_orders',orderData)
+		await publish(process.ccab_conecta.exchanges.QUEUE_ORDERS,'agrega_orders',orderData)
 		
 		// Publica dados do pagamento na fila pagamentos da agrega
-		await publish(process.summer.exchanges.QUEUE_ORDERS,'agrega_payments',paymentData)
+		await publish(process.ccab_conecta.exchanges.QUEUE_ORDERS,'agrega_payments',paymentData)
 
 	}
 	

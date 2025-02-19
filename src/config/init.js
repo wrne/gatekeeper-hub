@@ -5,11 +5,12 @@ import UserControl from '../controllers/auth/login-controllers.js'
 
 async function createNewAdm() {
 
-	const newPwd = process.env.SUMMER_ADM_PWD || 'sUmw3r@2025'
+	const newPwd = process.env.CONECTA_ADM_PWD || 'sUmw3r@2025'
 	const defaultUser = {
 		login: 'admin',
 		name: 'Admin',
-		password: newPwd
+		password: newPwd,
+		role: 'admin'
 	}
 
 	UserControl.newUser(defaultUser);
@@ -25,20 +26,21 @@ async function createTable() {
 
 	const db = new dbConn();
 
-	const createTableUsersStt = `create table [summer_users]
+	const createTableUsersStt = `create table [ccab_conecta_users]
 	(
 		id       UNIQUEIDENTIFIER primary key,
 		login	 varchar(40) not null unique,
 		name     varchar(60) not null,
-		password VARCHAR(161) not null
+		password VARCHAR(161) not null,
+		role 	 VARCHAR(10) not null,
 	)
 	`
 
-	// const extendedPropertyStt = `exec sp_addextendedproperty 'MS_Description', N'Usuários de integração CCAB', 'SCHEMA', 'dbo', 'TABLE', 'summer_users'`
+	// const extendedPropertyStt = `exec sp_addextendedproperty 'MS_Description', N'Usuários de integração CCAB', 'SCHEMA', 'dbo', 'TABLE', 'ccab_conecta_users'`
 
 	const createIndexStt = `
-	create unique index [summer_users_id_uindex]
-	on [summer_users] (id)
+	create unique index [ccab_conecta_users_id_uindex]
+	on [ccab_conecta_users] (id)
 	`
 
 

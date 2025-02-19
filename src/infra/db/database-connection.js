@@ -154,7 +154,7 @@ class dbConn {
 		    ${pagedStt}
 		`
 
-		if (process.summer.MODE === 'development'){
+		if (process.ccab_conecta.MODE === 'development'){
 			console.info(`Query: ${query}`);
 		}
 
@@ -169,7 +169,7 @@ class dbConn {
 		if (!this.pool)
 			this.pool = await sql.connect(this.sqlConfig)
 
-		await this.pool.request().query(execStt, (err, rs) => {
+		const result = await this.pool.request().query(execStt/*, (err, rs) => {
 
 			if (!!err) {
 				logError('Erro ao executar sql statement.',err)
@@ -179,9 +179,11 @@ class dbConn {
 
 			console.log(`Successful. Regs affected: ${rs?.rowsAffected}`)
 
-			return rs?.rowsAffected
+			// return rs?.rowsAffected
 
-		})
+		}*/)
+
+		return result.rowsAffected
 
 	}
 
