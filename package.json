@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./src/server.js",
     "dev": "nodemon ./src/server.js --dev-mode",
-    "init_env": "node ./src/config/init.js"
+    "init_env": "node ./src/config/init.js",
+    "update_queues": "node ./src/config/init-queues.js"
   },
   "author": "wrne",
   "license": "ISC",
