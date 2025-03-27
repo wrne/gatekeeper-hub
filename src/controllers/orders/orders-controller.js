@@ -1,6 +1,6 @@
 import {searchAllOrders, validateNewOrderData} from '../../models/orders/orders-model.js'
 import {mappingFieldsOrders} from './orders-adapter.js'
-import publish from "../../infra/queue/queue-manager.js"
+import { } from "../../infra/queue/queue-manager.js"
 
 async function getAllOrders(filter, params = {}) {
 

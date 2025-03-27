@@ -31,5 +31,9 @@ async function getProductPrice(filter) {
 
 }
 
+async function sendPriceTable(data){
+	console.log(`Sending price table: ${JSON.stringify(data)}`);
 
-export default { getAllPriceTables, getProductPrice }
+}
+
+export default { getAllPriceTables, getProductPrice, sendPriceTable }

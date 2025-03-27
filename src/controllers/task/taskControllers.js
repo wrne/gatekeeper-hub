@@ -1,4 +1,4 @@
-import publish from "../../infra/queue/queue-manager.js"
+import {publish} from "../../infra/queue/queue-manager.js"
 
 function newTask(routingKey,task){
 	

@@ -1,5 +1,6 @@
 import app from "./express.js";
 import http from "http";
+import webhooks from "./webhooks.js";
 
 // Verifica se possui o argumento de modo na chamada do app
 const developmentMode = process.argv.includes("--dev-mode");
@@ -21,8 +22,10 @@ http.createServer(app).listen(port, function () {
  | |  | |     / _ \\ |  _ \\  | |   / _ \\| '_ \\ / _ \\/ __| __/ _\` |
  | |__| |___ / ___ \\| |_) | | |__| (_) | | | |  __/ (__| || (_| |
   \\____\\____/_/   \\_\\____/   \\____\\___/|_| |_|\\___|\\___|\\__\\__,_|
-                                                      V 0.0.1`);
+                                                      V 0.0.1: ${process.ccab_conecta.MODE} mode`);
 	
 	console.log(`Servidor escutando na porta: ${port}`);
+	webhooks() //Ativa os webhooks de integração vindos do Protheus
+
 });
 
