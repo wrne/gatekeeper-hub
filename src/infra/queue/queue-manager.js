@@ -35,51 +35,49 @@ export function publish(exchange, routingKey, message) {
 
 }
 
-export class ListenerMQ {
-	constructor(queueName, callback) {
-		this.callback = callback; // Função de callback personalizada
-		this.queueName = queueName;
-		this.init();
-	}
+export function ListenerMQ(queueName, callback) {
 
-	async init() {
-		try {
-			// this.connection = await amqp.connect(amqpConnString);
-			// this.channel = await this.connection.createChannel();
-			// await this.channel.assertQueue(this.queueName, { durable: true });
-			amqp.connect(amqpConnString,  (error0, connection) => {
-				if (error0) {
-					throw error0;
+	try {
+		// this.connection = await amqp.connect(amqpConnString);
+		// this.channel = await this.connection.createChannel();
+		// await this.channel.assertQueue(this.queueName, { durable: true });
+		amqp.connect(amqpConnString,  (error0, connection) => {
+			if (error0) {
+				throw error0;
+			}
+
+			console.log(`Connected with AMQP service at ${process.env.QUEUE_HOST}`);
+			connection.createChannel( (error1, channel) => {
+				if (error1) {
+					throw error1;
 				}
 
-				console.log(`Connected with AMQP service at ${process.env.QUEUE_HOST}`);
-				connection.createChannel( (error1, channel) => {
-					if (error1) {
-						throw error1;
-					}
+				console.log(`[*] Consumidor iniciado. Aguardando mensagens na fila ${queueName}...`);
 
-					console.log('[*] Consumidor iniciado. Aguardando mensagens...');
+				channel.consume(queueName, async (msg) => {
+					if (msg !== null) {
+						const receivedObject = JSON.parse(msg.content.toString());
+						console.log('[✔] Mensagem recebida:', receivedObject);
 
-					channel.consume(this.queueName, (msg) => {
-						if (msg !== null) {
-							const receivedObject = JSON.parse(msg.content.toString());
-							console.log('[✔] Mensagem recebida:', receivedObject);
-
-							// Chama a função de callback, passando a mensagem recebida
-							this.callback(receivedObject);
-
+						// Chama a função de callback, passando a mensagem recebida
+						if (await callback(receivedObject))
+							console.log('[✔] Mensagem processada com sucesso');
 							// Confirma que a mensagem foi processada com sucesso
-							// this.channel.ack(msg);
-						}
-					});
+							// channel.ack(msg);
+						else
+							console.log('[❌] Erro ao processar mensagem');
 
 
-
+					}
 				});
-			});
 
-		} catch (error) {
-			console.error('[❌] Erro ao conectar ao RabbitMQ:', error);
-		}
+
+
+			});
+		});
+
+	} catch (error) {
+		console.error('[❌] Erro ao conectar ao RabbitMQ:', error);
 	}
+	
 }

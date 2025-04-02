@@ -1,3 +1,4 @@
+import axios from "axios";
 import customersModel from '../../models/customers/customers-model.js'
 import {mappingFieldsCustomers} from './customers-adapter.js'
 
@@ -24,6 +25,26 @@ async function getAllCustomers(filter) {
 	});
 
 	return customersModel.searchAllCustomers(filters, pageNumber, pageSize)
+
+}
+
+export function sendCustomer(data){
+
+	let sucess = false
+  console.log(`Sending customer: ${JSON.stringify(data)}`);
+
+  const url = `${process.env.FARMI_URL_INTEGRATION}/price-tables`;
+
+  
+  try {
+    const response = await axios.post(url, data);
+    console.log("Customer sent successfully:", response.data);
+	sucess = true
+  } catch (error) {
+    console.error("Error sending customer:", error.response?.data || error.message);
+  }
+
+  return sucess
 
 }
 

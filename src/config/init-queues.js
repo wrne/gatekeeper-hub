@@ -33,6 +33,11 @@ export async function createQueuesStructure() {
 					// Binding da fila de novas tabelas de preço
 					queue: "price_tables",
 					routingKey: "price_tables"
+				},
+				{
+					// Binding da fila de novos clientes
+					queue: "customers",
+					routingKey: "customers"
 				}
 			]
 		}
