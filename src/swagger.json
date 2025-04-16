@@ -929,6 +929,170 @@
 				}
 			}
 		},
+		"/availability/package":{
+			"get": {
+				"summary": "Get availability by package ",
+				"description": "Get the availability of one or more products in specifics package.",
+				"tags": [
+					"Availability"
+				],
+				"parameters": [
+					{
+						"name": "product",
+						"in": "query",
+						"description": "The ID of the products to search for [separated by ;].\n Example: PROD1.001.ABC;PROD2.002.ABC",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An array with availability of the products in the specified packages ID.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/AvailabilityProduct"
+									}
+								}
+								
+							}
+						}
+					}
+				}
+			}
+		},
+		"/availability/alias":{
+			"get": {
+				"summary": "Get availability by alias ",
+				"description": "Get the availability of one or more products in specifics chemical alias.",
+				"tags": [
+					"Availability"
+				],
+				"parameters": [
+					{
+						"name": "product",
+						"in": "query",
+						"description": "The ID of the chemical aliases to search for [separated by ;].\n Example: PROD1.001;PROD2.002",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An array with availability of the products in the specified alias ID.",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/AvailabilityProduct"
+									}
+								}
+								
+							}
+						}
+					}
+				}
+			}
+		},
+		"/availability/package/branch":{
+			"get": {
+				"summary": "Get availability by package for each branch on System",
+				"description": "Get the availability of one or more products in specifics package separated by branchs.",
+				"tags": [
+					"Availability"
+				],
+				"parameters": [
+					{
+						"name": "product",
+						"in": "query",
+						"description": "The ID of the products to search for [separated by ;].\n Example: PROD1.001.ABC;PROD2.002.ABC",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An array with availability of the products in the specified packages ID",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/AvailabilityProduct"
+									}
+								}
+								
+							}
+						}
+					}
+				}
+			}
+		},
+		"/availability/alias/branch":{
+			"get": {
+				"summary": "Get availability by chemical alias for each branch on System",
+				"description": "Get the availability of one or more products in specifics chemical alias separated by branchs.",
+				"tags": [
+					"Availability"
+				],
+				"parameters": [
+					{
+						"name": "product",
+						"in": "query",
+						"description": "The ID of the aliases to search for [separated by ;].\n Example: PROD1.001;PROD2.002",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "An array with availability of the products in the specified aliases ID",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/AvailabilityProduct"
+									}
+								}
+								
+							}
+						}
+					}
+				}
+			}
+		},
 		"/login": {
 			"post": {
 				"summary": "Login for testing",
@@ -1225,6 +1389,62 @@
 					},
 					"economicGroup": {
 						"type": "string"
+					}
+				}
+			},
+			"AvailabilityProduct": {
+				"type": "object",
+				"properties": {
+					"product": {
+						"type": "string"
+					},
+					"availability": {
+						"type": "array",
+						"items": {
+							"type": "object",
+							"properties": {
+							"filial": {
+								"type": "string"
+							},
+							"mes_1": {
+								"type": "integer"
+							},
+							"mes_2": {
+								"type": "integer"
+							},
+							"mes_3": {
+								"type": "integer"
+							},
+							"mes_4": {
+								"type": "integer"
+							},
+							"mes_5": {
+								"type": "integer"
+							},
+							"mes_6": {
+								"type": "integer"
+							},
+							"mes_7": {
+								"type": "integer"
+							},
+							"mes_8": {
+								"type": "integer"
+							},
+							"mes_9": {
+								"type": "integer"
+							},
+							"mes_10": {
+								"type": "integer"
+							},
+							"mes_11": {
+								"type": "integer"
+							},
+							"mes_12": {
+								"type": "integer"
+							}
+						}
+						}
+						
 					}
 				}
 			}

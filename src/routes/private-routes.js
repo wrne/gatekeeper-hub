@@ -10,6 +10,7 @@ import creditRoutes from "./credit/credit-routes.js"
 import paymentsRoutes from "./payments/payments-routes.js"
 import pricesRoutes from "./prices/prices-routes.js"
 import customersRoutes from "./customers/customers-routes.js"
+import stocksRoutes from "./availability/availability-routes.js"
 
 const router = express.Router();
 
@@ -20,6 +21,7 @@ router.use('/credit',autorizateMiddleware(['admin','agrega']),creditRoutes);
 router.use('/payments',autorizateMiddleware(['admin','agrega']),paymentsRoutes);
 router.use('/prices',autorizateMiddleware(['admin','agrega']),pricesRoutes);
 router.use('/customers',autorizateMiddleware(['admin','agrega']),customersRoutes);
+router.use('/availability',autorizateMiddleware(['admin','agrega']),stocksRoutes);
 
 
 router.post('/newUser',autorizateMiddleware(['admin']), async(req, res) => {

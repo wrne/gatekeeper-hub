@@ -2,30 +2,82 @@ import sql from "mssql"
 import "dotenv/config"
 import { logError } from "../../utils/log-generator.js"
 
+const configProtheus = {
+	user: process.env.DB_USER,
+	password: process.env.DB_PWD,
+	database: process.env.DB_NAME,
+	server: process.env.DB_HOST,
+	pool: {
+		max: 10,
+		min: 0,
+		idleTimeoutMillis: 1000
+	},
+	options: {
+		trustServerCertificate: true // change to true for local dev / self-signed certs
+	}
+}
+
+const configBI = {
+	user: process.env.DB_BI_USER,
+	password: process.env.DB_BI_PWD,
+	database: process.env.DB_BI_NAME,
+	server: process.env.DB_BI_HOST,
+	pool: {
+		max: 10,
+		min: 0,
+		idleTimeoutMillis: 1000
+	},
+	options: {
+		trustServerCertificate: true // change to true for local dev / self-signed certs
+	}
+}
+
+// Map pra armazenar mais de uma pool de conexão com o banco, se necessário
+const connectionPools = {};
+
 class dbConn {
 
-	constructor() {
+	constructor(whichDb	= 'ccab') {
 
-		this.sqlConfig = {
-			user: process.env.DB_USER,
-			password: process.env.DB_PWD,
-			database: process.env.DB_NAME,
-			server: process.env.DB_HOST,
-			pool: {
-				max: 10,
-				min: 0,
-				idleTimeoutMillis: 1000
-			},
-			options: {
-				trustServerCertificate: true // change to true for local dev / self-signed certs
-			}
-		}
+		// this.sqlConfig = {
+		// 	user: process.env.DB_USER,
+		// 	password: process.env.DB_PWD,
+		// 	database: process.env.DB_NAME,
+		// 	server: process.env.DB_HOST,
+		// 	pool: {
+		// 		max: 10,
+		// 		min: 0,
+		// 		idleTimeoutMillis: 1000
+		// 	},
+		// 	options: {
+		// 		trustServerCertificate: true // change to true for local dev / self-signed certs
+		// 	}
+		// }
+		this.whichDb = whichDb
+		this.pool = null
+		this.sqlConfig = (whichDb !== 'bi' ? configProtheus : configBI)
 
 	}
 
+    async getPool() {
+        // Check if a pool already exists for the selected database
+        if (!connectionPools[this.whichDb]) {
+            try {
+                // Create a new pool and store it in the map
+                // connectionPools[this.whichDb] = await sql.connect(this.sqlConfig);
+				const pool = new sql.ConnectionPool(this.sqlConfig);
+				connectionPools[this.whichDb] = await pool.connect();
+            } catch (err) {
+                logError(`Error creating connection pool for ${this.whichDb}`, err);
+                throw err;
+            }
+        }
+        return connectionPools[this.whichDb];
+    }
+	
 	async query(queryStt, params = {}) {
 		if (!this.pool)
-			this.pool = await sql.connect(this.sqlConfig)
+			this.pool = await this.getPool();
 
 		const request = this.pool.request()
 
@@ -98,7 +150,7 @@ class dbConn {
 		const isThereWhere = !!where && whereArr.length > 0
 
 		if (!this.pool)
-			this.pool = await sql.connect(this.sqlConfig)
+			this.pool = await this.getPool();
 
 		const request = this.pool.request()
 
@@ -164,10 +216,35 @@ class dbConn {
 
 	}
 
+	async execSP({name, params}) {
+		if (!this.pool)
+			this.pool = await this.getPool();
+
+		const request = this.pool.request()
+
+		let paramsArr = []
+		if (params instanceof Object) {
+			paramsArr = Object.entries(params)
+		};
+
+		paramsArr.forEach(([key, value]) => {
+			
+			request.input(key, sql.VarChar, value)
+			
+		})
+		
+		// request.input('preProdutos', sql.VarChar, 'GLIF.720.002;FOMS.250.002')
+		const result = await request.execute(name)
+		
+		// const result = await request.execute(`Exec dbo.${name} '${params}';`)
+
+		return result.recordset
+	}
+
 	async exec(execStt) {
 
 		if (!this.pool)
-			this.pool = await sql.connect(this.sqlConfig)
+			this.pool = await this.getPool();
 
 		const result = await this.pool.request().query(execStt/*, (err, rs) => {
 
@@ -193,7 +270,7 @@ class dbConn {
 		const isThereWhere = !!where && whereArr.length > 0
 
 		if (!this.pool)
-			this.pool = await sql.connect(this.sqlConfig)
+			this.pool = await this.getPool();
 
 		const request = this.pool.request()
 
@@ -228,7 +305,7 @@ class dbConn {
 
 }
 
-async function buildWhereStt(request, table, whereArr){
+async function buildWhereStt(request, table, whereArr, storeProcedure = false) {
 	
 	// Tratamento contra SQL Injection das condições enviadas no parametro 'Where' 
 
