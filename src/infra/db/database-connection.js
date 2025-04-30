@@ -163,7 +163,7 @@ class dbConn {
 				if (!!aJoin && !!aJoin.table && !!aJoin.on) {
 					const type = !!aJoin.type ? aJoin.type : 'inner'
 
-					joinStt = ` ${type} JOIN ${aJoin.table} ON `
+					joinStt += ` ${type} JOIN ${aJoin.table} ON `
 
 					const onArr = Object.entries(aJoin.on)
 					joinStt += onArr.map(([key, value]) => `${key} = ${value}`).join(' AND ')
