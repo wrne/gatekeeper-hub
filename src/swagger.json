@@ -1434,6 +1434,14 @@
 					},
 					"description":{
 						"type": "string"
+					},
+					"status":{
+						"type": "string",
+						"enum": [
+							"open",
+							"paid",
+							"overdue"
+						]
 					}
 				}
 			},

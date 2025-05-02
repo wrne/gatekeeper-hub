@@ -23,7 +23,28 @@ async function getAllPayments(filter) {
     };
   }
 
-  return paymentsModel.searchAllPayments(filters, pageNumber, pageSize);
+  const payments = await paymentsModel.searchAllPayments(filters, pageNumber, pageSize);
+
+	const returnPayments = payments.map((payment) => {
+		const newPayment = {
+			...payment
+		}
+
+		if(payment.balance > 0){
+			if(payment.dueDate < new Date().toISOString().slice(0, 10).replace(/-/g, "")){
+				newPayment["status"] = "overdue";
+			}
+			else{
+				newPayment["status"] = "open";
+			}
+		} else {
+			newPayment["status"] = "paid";
+		}
+		return newPayment
+  })
+
+  return returnPayments;
+
 }
 
 export { getAllPayments };
