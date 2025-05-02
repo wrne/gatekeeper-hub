@@ -868,6 +868,24 @@
 						"schema": {
 							"type": "string"
 						}
+					},
+					{
+						"name": "nationalRegister",
+						"in": "query",
+						"description": "Filter by a specific national register.",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "stateRegistration",
+						"in": "query",
+						"description": "Filter by a specific state registration.",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
 					}
 				],
 				"security": [
@@ -1488,7 +1506,10 @@
 					"type": {
 						"type": "string"
 					},
-					"idDocument": {
+					"nationalRegister": {
+						"type": "string"
+					},
+					"stateRegistration": {
 						"type": "string"
 					},
 					"state": {

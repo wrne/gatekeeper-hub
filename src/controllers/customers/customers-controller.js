@@ -28,17 +28,17 @@ async function getAllCustomers(filter) {
 
 }
 
-export function sendCustomer(data){
+export async function sendCustomer(data){
 
 	let sucess = false
-  console.log(`Sending customer: ${JSON.stringify(data)}`);
+  console.log(`Sending customer. `);
 
   const url = `${process.env.FARMI_URL_INTEGRATION}/price-tables`;
 
   
   try {
     const response = await axios.post(url, data);
-    console.log("Customer sent successfully:", response.data);
+    console.log("Customer sent successfully:");
 	sucess = true
   } catch (error) {
     console.error("Error sending customer:", error.response?.data || error.message);

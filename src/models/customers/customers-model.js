@@ -18,7 +18,7 @@ async function searchAllCustomers(filters, pageNumber, pageSize) {
 		operator: '<>'
 	}
 	
-	const fields = ['A1_COD','A1_LOJA','A1_NOME','A1_PESSOA','A1_CGC','A1_EST','A1_MUN','A1_GRPVEN','A1_COMPLEM','A1_EMAIL']
+	const fields = ['A1_COD','A1_LOJA','A1_NOME','A1_PESSOA','A1_CGC','A1_INSCR','A1_EST','A1_MUN','A1_GRPVEN','A1_COMPLEM','A1_EMAIL']
 	
 	
 	filters = {
