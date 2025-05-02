@@ -40,25 +40,6 @@ router.get('/',async (req, res) => {
 });
 
 /**
- * Rota de Consulta de pedidos - Listagem de acordo com os filtros
- */
-router.get('/items', async (req, res) => {
-	
-	try {
-		
-		const ordersList = await ordersController.getAllOrders(req.query, {withItems: true})
-		logMessage(`orders List retrieved successful`)
-
-		res.success(ordersList, 'consult proceed successful.')
-
-
-	} catch (error) {
-		res.error(500, error, 'Failure on getting orders')
-	}
-
-});
-
-/**
  * Rota de Consulta de pedido por ID
  */
 router.get('/:id', async (req, res) => {
@@ -67,24 +48,6 @@ router.get('/:id', async (req, res) => {
 		
 		
 		const [order] = await ordersController.getAllOrders({id: req.params.id})
-		logMessage(`order retrieved successful`)
-
-		res.success(order, 'consult proceed successful.')
-
-	} catch (error) {
-		res.error(500, error, 'Failure on getting order')
-	}
-});
-
-/**
- * Rota de Consulta de pedido por ID com Itens
- */
-router.get('/:id/items', async (req, res) => {
-	
-	try {
-		
-		
-		const [order] = await ordersController.getAllOrders({id: req.params.id}, {withItems: true})
 		logMessage(`order retrieved successful`)
 
 		res.success(order, 'consult proceed successful.')

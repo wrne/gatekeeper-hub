@@ -14,13 +14,22 @@ async function getAllOrders(filter, params = {}) {
 
 	mappingFields.forEach(([fieldReq, fieldProtheus]) => {
 
-		// Se um campo mapeado for enviado como parâmetro, ele é adicionado ao filtro
-		if (filter[fieldReq])
-			filters[fieldProtheus] = filter[fieldReq];
+		// // Se um campo mapeado for enviado como parâmetro, ele é adicionado ao filtro
+		if (filter[fieldReq]){
+			
+			if (fieldReq === 'emitDate') {
+				filters[fieldProtheus] = {value: filter[fieldReq], operator: '>='}
+			} else {
+				filters[fieldProtheus] = filter[fieldReq];
+			}
+
+		}
+		// 	filters[fieldProtheus] = filter[fieldReq];
 
 	});
 
-	const withItems = params.withItems || false
+	// const withItems = params.withItems || false
+	const withItems = true
 
 	return searchAllOrders(filters,withItems, pageNumber, pageSize)
 

@@ -45,15 +45,22 @@ async function searchAllOrders(filters, withItems, pageNumber, pageSize) {
 		const resultOrdersQuery = await conn.buildQuery(params)
 
 		const ordersNumbers = resultOrdersQuery.map(order => `'${order.Z2_NUM}'`).join(',')
+		if (!ordersNumbers)
+			return []
+
+		
 		const queryStt = `
-			Select Z2_NUM, Z2_EMISSAO, Z2_CLIENTE,Z2_LOJACLI, Z3_ITEM, Z3_PRODUTO, Z3_QTDVEN, Z3_VALOR
-			  From SZ2010 SZ2
+			Select Z2_NUM, Z2_EMISSAO, Z2_CLIENTE,Z2_LOJACLI,A1_NOME, A1_COMPLEM, A1_INSCR, Z3_ITEM, Z3_PRODUTO, Z3_QTDVEN, Z3_VALOR			  From SZ2010 SZ2
 			 Inner join SZ3010 SZ3
 			    On SZ2.Z2_NUM = SZ3.Z3_NUM
+			 Inner join SA1010 SA1
+			    On SZ2.Z2_CLIENTE = SA1.A1_COD
+			   and SZ2.Z2_LOJACLI = SA1.A1_LOJA
 			 Where SZ2.Z2_NUM in (${ordersNumbers})
 			   and Z3_BLQ Not in ('C','R','S')
 			   and SZ2.D_E_L_E_T_ = ''
 			   and SZ3.D_E_L_E_T_ = ''
+			   and SA1.D_E_L_E_T_ = ''
 			 Order by Z2_NUM, Z3_ITEM
 		`
 
@@ -71,6 +78,10 @@ async function searchAllOrders(filters, withItems, pageNumber, pageSize) {
 					emitDate: item.Z2_EMISSAO,
 					customerId: item.Z2_CLIENTE,
 					customerStore: item.Z2_LOJACLI,
+					customerName: item.A1_NOME,
+					customerFarmi: item.A1_COMPLEM,
+					customerStateRegistration: item.A1_INSCR,
+					totalOrder: item.Z3_VALOR,
 					items: [{
 						product: item.Z3_PRODUTO,
 						amout: item.Z3_QTDVEN, 
@@ -78,6 +89,7 @@ async function searchAllOrders(filters, withItems, pageNumber, pageSize) {
 					}]
 				})
 			} else {
+				orders[orders.length - 1].totalOrder += item.Z3_VALOR
 				orders[orders.length - 1].items.push({
 					product: item.Z3_PRODUTO,
 					amout: item.Z3_QTDVEN, 
