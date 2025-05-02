@@ -13,6 +13,7 @@ async function createNewAdm() {
 		role: 'admin'
 	}
 
+	console.log('BD| Criando admnin...');
 	UserControl.newUser(defaultUser);
 }
 
@@ -44,8 +45,11 @@ async function createTable() {
 	`
 
 
+	console.log('BD| Criando tabela de usuários de integração...');
 	await db.exec(createTableUsersStt);
+	
 	// await db.exec(extendedPropertyStt);
+	console.log('BD| Criando índice da tabela de usuários de integração...');
 	await db.exec(createIndexStt);
 	// await db.exec(addConstraintStt);
 
@@ -66,7 +70,8 @@ async function createViews() {
 	// ----------------------------------------------------------------------
 	let createViewStt = `
 	create or alter View Credit_actualLimit  As
-	select ZZH_GRPVEN GRUPO_ECONOMICO, ZZH_SAFRA SAFRA, iif(ZZH_MOEDLC=1, 'BRL','USD') MOEDA, ZZH_SLDDUP DUPLICATAS, ZZH_SLDPED PEDIDOS_PENDENTES,
+	select ZZH_GRPVEN GRUPO_ECONOMICO, ZZH_SAFRA SAFRA, iif(ZZH_MOEDLC=1, 'BRL','USD') MOEDA, ZZH_SLDDUP + ZZH_SLDPED TOTAL_CONSUMIDO,
+			ZZH_LIMPOT LIMITE_TOTAL,
 	              iif(ZZH_LIMDIS + ZZH_LIMCLE > ZZH_LIMPOT,ZZH_LIMPOT,ZZH_LIMDIS + ZZH_LIMCLE)
 	                  +iif(ZZH_LIMMAN>0 And ZZH_VIGTMP>Convert(VARCHAR(8),getDate(),112),ZZH_LIMMAN,0 )
 	                  - ZZH_SLDDUP
@@ -92,6 +97,7 @@ async function createViews() {
 	   and DA0_ATIVO = '1'
 	`
 
+	console.log('BD| Criando views necessárias...');
 	await db.exec(createViewStt);
 
 	

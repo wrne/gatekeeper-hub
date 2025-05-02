@@ -1,4 +1,4 @@
-import creditModel from '../../models/credit/credit-model.js'
+import {searchAllLimits, getGuarantees, getMappingGuaranteesTypes} from '../../models/credit/credit-model.js'
 import {mappingFieldsCredit} from './credit-adapter.js'
 
 async function getAllLimits(filter) {
@@ -20,9 +20,29 @@ async function getAllLimits(filter) {
 	});
 
 
-	return creditModel.searchAllLimits(filters, pageNumber, pageSize)
+	const groups = await searchAllLimits(filters, pageNumber, pageSize)
+	
+	filters["groups"] = groups.map( group => group.group)
+	const guarantees = await getGuarantees(filters)// TODO: OBter as garantias e montar objeto de retorno com dados do LC e das garantias
+	const mapGuaranteesTypes = await getMappingGuaranteesTypes()
+	const result = groups.map(group => {
+		const guaranteesOfGroup = guarantees.filter(guarantee => guarantee.group === group.group)
+		let guaranteesOfGroupObj = {}
+		guaranteesOfGroup.forEach(amountGuarantee => {
+			guaranteesOfGroupObj[mapGuaranteesTypes[amountGuarantee.type.trim()]] = amountGuarantee.totalCredit
+		});
+		return {
+			...group,
+			composition: guaranteesOfGroupObj
+		}
+	})
+
+
+
+	return result
 
 }
+
 
 
 export { getAllLimits }

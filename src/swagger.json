@@ -1365,8 +1365,22 @@
 					"currency": {
 						"type": "string"
 					},
-					"actualLimit": {
+					"totalLimit": {
 						"type": "number"
+					},
+					"availableLimit": {
+						"type": "number"
+					},
+					"limitConsumed": {
+						"type": "number"
+					},
+					"composition": {
+						"type": "object",
+						"properties": {
+							"#types_guarantee": {
+								"type": "number"
+							}
+						}
 					}
 				}
 			},
