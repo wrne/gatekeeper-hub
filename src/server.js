@@ -10,7 +10,7 @@ const port = process.env.port || 3000;
 // Define variável global para definir configurações da fila de mensagens
 process.ccab_conecta = {
 	exchanges: {
-		QUEUE_ORDERS : 'orders_teste'
+		farmi : 'farmi'
 	},
 	MODE: (developmentMode ? 'development' : 'production')
 }

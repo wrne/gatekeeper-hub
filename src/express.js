@@ -2,7 +2,6 @@ import express from "express";
 import bodyParser from "body-parser";
 import helmet from "helmet";
 
-import loggerMiddleware from "./middleware/logger-middleware.js"
 import privateRoutes from "./routes/private-routes.js";
 import publicRoutes from "./routes/public-routes.js";
 import responseFormatter from "./middleware/return-messages-middleware.js"
@@ -19,7 +18,6 @@ app.use(bodyParser.json());
 app.use(helmet());
 app.use(responseFormatter);
 
-app.use(loggerMiddleware)// Middleware de logging
 
 // Rotas que não necesistam autenticação
 app.use( publicRoutes );

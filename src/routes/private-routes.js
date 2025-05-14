@@ -4,6 +4,7 @@ import taskController from "../controllers/task/taskControllers.js"
 import authMiddleware from "../middleware/auth-middleware.js"
 import autorizateMiddleware from "../middleware/autorization-middleware.js"
 import { logMessage } from "../utils/log-generator.js";
+import loggerMiddleware from "../middleware/logger-middleware.js"
 
 import ordersRoutes from "./orders/orders-routes.js"
 import creditRoutes from "./credit/credit-routes.js"
@@ -16,6 +17,7 @@ import availabilityRoutes from "./availability/availability-routes.js"
 const router = express.Router();
 
 router.use(authMiddleware)	// Middleware de autenticação
+router.use(loggerMiddleware)// Middleware de logging
 
 router.use('/orders',autorizateMiddleware(['admin','agrega']),ordersRoutes);
 router.use('/credit',autorizateMiddleware(['admin','agrega']),creditRoutes);
