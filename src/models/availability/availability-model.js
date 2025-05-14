@@ -24,6 +24,8 @@ async function getAvailability(filter) {
 			oldPackage = item.codigo
 			availabilityResult.push( {
 				product: item.codigo,
+				leadtime: item.leadtime,
+				stockLimited: item.flagBloqueioComercialTodosBloqueados,
 				availability: []
 			})
 		}

@@ -1414,6 +1414,12 @@
 					"product": {
 						"type": "string"
 					},
+					"leadtime": {
+						"type": "integer"
+					},
+					"stockLimited": {
+						"type": "string"
+					},
 					"availability": {
 						"type": "array",
 						"items": {
