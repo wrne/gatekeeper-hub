@@ -1099,7 +1099,7 @@
 							"schema": {
 								"type": "object",
 								"properties": {
-									"username": {
+									"login": {
 										"type": "string",
 										"description": "User's username"
 									},
@@ -1148,6 +1148,12 @@
 					"product": {
 						"type": "string"
 					},
+					"productDescription": {
+						"type": "string"
+					},
+					"productPackage": {
+						"type": "string"
+					},
 					"amout": {
 						"type": "integer"
 					},
@@ -1177,7 +1183,31 @@
 					"customerFarm": {
 						"type": "string"
 					},
+					"customerAddresss": {
+						"type": "string"
+					},
+					"customerSegment": {
+						"type": "string"
+					},
+					"Seller": {
+						"type": "string"
+					},
+					"paymentConditionCode": {
+						"type": "string"
+					},
+					"paymentConditionDescription": {
+						"type": "string"
+					},
 					"customerStateRegistration": {
+						"type": "string"
+					},
+					"customerNationalRegistration": {
+						"type": "string"
+					},
+					"currencyCode": {
+						"type": "string"
+					},
+					"currencyDescription": {
 						"type": "string"
 					},
 					"totalOrder": {

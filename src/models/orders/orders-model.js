@@ -50,17 +50,48 @@ async function searchAllOrders(filters, withItems, pageNumber, pageSize) {
 
 		
 		const queryStt = `
-			Select Z2_NUM, Z2_EMISSAO, Z2_CLIENTE,Z2_LOJACLI,A1_NOME, A1_COMPLEM, A1_INSCR, Z3_ITEM, Z3_PRODUTO, Z3_QTDVEN, Z3_VALOR			  From SZ2010 SZ2
+			Select Z2_NUM, 
+				   Z2_EMISSAO, 
+				   Z2_CLIENTE,
+				   Z2_LOJACLI, 
+				   Z2_VEND2, 
+				   Z2_VEND3, 
+				   Z2_CONDPAG, 
+				   Z2_MOEDA, 
+				   E4_DESCRI,
+				   A1_NOME, 
+				   A1_COMPLEM, 
+				   A1_INSCR, 
+				   A1_END,
+				   A1_CGC,
+				   Z3_ITEM, 
+				   Z3_PRODUTO,
+				   B1_DESC,
+				   B1_XPREPRO,
+				   Z3_QTDVEN, 
+				   Z3_VALOR
+			  From SZ2010 SZ2
 			 Inner join SZ3010 SZ3
 			    On SZ2.Z2_NUM = SZ3.Z3_NUM
+			 Inner join SB1010 SB1
+			    on B1_COD = Z3_PRODUTO
 			 Inner join SA1010 SA1
 			    On SZ2.Z2_CLIENTE = SA1.A1_COD
 			   and SZ2.Z2_LOJACLI = SA1.A1_LOJA
+			 Inner join SE4010 SE4
+			    On SZ2.Z2_CONDPAG = SE4.E4_CODIGO
+			 Inner join SA3010 SA3_SEG
+			    ON SZ2.Z2_VEND2 = SA3_SEG.A3_COD
+			 Inner join SA3010 SA3_VEND
+			    ON SZ2.Z2_VEND2 = SA3_VEND.A3_COD
 			 Where SZ2.Z2_NUM in (${ordersNumbers})
 			   and Z3_BLQ Not in ('C','R','S')
 			   and SZ2.D_E_L_E_T_ = ''
 			   and SZ3.D_E_L_E_T_ = ''
 			   and SA1.D_E_L_E_T_ = ''
+			   and SA3_SEG.D_E_L_E_T_ = ''
+			   and SA3_VEND.D_E_L_E_T_ = ''
+			   and SE4.D_E_L_E_T_ = ''
 			 Order by Z2_NUM, Z3_ITEM
 		`
 
@@ -79,11 +110,21 @@ async function searchAllOrders(filters, withItems, pageNumber, pageSize) {
 					customerId: item.Z2_CLIENTE,
 					customerStore: item.Z2_LOJACLI,
 					customerName: item.A1_NOME,
-					customerFarmi: item.A1_COMPLEM,
+					customerFarm: item.A1_COMPLEM,
+					customerAddress: item.A1_END,
 					customerStateRegistration: item.A1_INSCR,
+					customerNationalRegistration: item.A1_CGC,
+					customerSegment: item.Z2_VEND2,
+					seller: item.Z2_VEND3,
+					paymentConditionCode: item.Z2_CONDPAG,
+					paymentConditionDescription: item.E4_DESCRI,
+					currencyCode: item.Z2_MOEDA,
+					currencyDescription: (item.Z2_MOEDA == 1 ? 'BRL' : 'USD'), // TODO: Implementar dicionário de moedas
 					totalOrder: item.Z3_VALOR,
 					items: [{
 						product: item.Z3_PRODUTO,
+						productDescription: item.B1_DESC,
+						productPackage: item.B1_XPREPRO,
 						amout: item.Z3_QTDVEN, 
 						value: item.Z3_VALOR
 					}]
@@ -92,6 +133,8 @@ async function searchAllOrders(filters, withItems, pageNumber, pageSize) {
 				orders[orders.length - 1].totalOrder += item.Z3_VALOR
 				orders[orders.length - 1].items.push({
 					product: item.Z3_PRODUTO,
+					productDescription: item.B1_DESC,
+					productPackage: item.B1_XPREPRO,
 					amout: item.Z3_QTDVEN, 
 					value: item.Z3_VALOR
 				});
