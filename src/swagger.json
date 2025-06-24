@@ -345,6 +345,15 @@
 						}
 					},
 					{
+						"name": "economicGroup",
+						"in": "query",
+						"description": "Filter payments by economic group code.",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
 						"name": "dueDate",
 						"in": "query",
 						"description": "Filter payments by due date. (Format: YYYYMMDD)",
@@ -435,6 +444,15 @@
 						"name": "issueDate",
 						"in": "query",
 						"description": "Filter payments by issue date. (Format: YYYYMMDD)",
+						"required": false,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "economicGroup",
+						"in": "query",
+						"description": "Filter payments by economic group code.",
 						"required": false,
 						"schema": {
 							"type": "string"
@@ -1337,6 +1355,12 @@
 						"type": "string"
 					},
 					"description":{
+						"type": "string"
+					},
+					"economicGroup":{
+						"type": "string"
+					},
+					"economicGroupDescription":{
 						"type": "string"
 					},
 					"status":{

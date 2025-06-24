@@ -14,7 +14,7 @@ async function searchAllPayments(filters, pageNumber, pageSize) {
 	const conn = new dbConn()
 	const D_E_L_E_T_ = ''
 	
-	const fields = ['E1_NUM','E1_PARCELA','E1_TIPO','E1_CLIENTE','E1_LOJA','E1_EMISSAO','E1_VENCREA','E1_SALDO','E1_MOEDA','E1_HIST']
+	const fields = ['E1_NUM','E1_PARCELA','E1_TIPO','E1_CLIENTE','E1_LOJA','E1_EMISSAO','E1_VENCREA','E1_SALDO','E1_MOEDA','E1_HIST','E1_XGRUCLI','E1_XGRUDES']
 
 	
 	filters = {
