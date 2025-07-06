@@ -206,7 +206,7 @@ class dbConn {
 		    ${pagedStt}
 		`
 
-		if (process.ccab_conecta.MODE === 'development'){
+		if (process.gatekeeper_hub.MODE === 'development'){
 			console.info(`Query: ${query}`);
 		}
 

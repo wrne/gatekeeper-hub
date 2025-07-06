@@ -12,7 +12,7 @@ async function newUser({login, password, name, role}){
 
 	// console.log(`salt: ${salt} || hash: ${hash}`);
 
-	const insertNewUserStt = `insert into ccab_conecta_users(id, login, name, password, role) values ('${uudi}','${login}', '${name}','${hash}:${salt}', '${role}' )`
+	const insertNewUserStt = `insert into gatekeeper_hub_users(id, login, name, password, role) values ('${uudi}','${login}', '${name}','${hash}:${salt}', '${role}' )`
 	
 	return await db.exec(insertNewUserStt) 
 
@@ -20,7 +20,7 @@ async function newUser({login, password, name, role}){
 
 async function authUser({login, password}){
 
-	const queryStt = `Select password from ccab_conecta_users where login = '${login}'`
+	const queryStt = `Select password from gatekeeper_hub_users where login = '${login}'`
 	const rsHashAndSalt = await db.query(queryStt);
 	
 	if (!rsHashAndSalt || rsHashAndSalt.length < 1){

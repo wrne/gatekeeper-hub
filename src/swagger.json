@@ -1,12 +1,12 @@
 {
 	"openapi": "3.0.1",
 	"info": {
-		"title": "Conecta by CCAB",
+		"title": "Gatekeeper Hub API",
 		"version": "1.0.0",
-		"description": "API de integração com o ERP da CCAB",
+		"description": "API de integração com o Gatekeeper Hub, um middleware de integração com sistemas de ERP.",
 		"contact": {
-			"name": "CCAB",
-			"email": "suporte@ccab-agro.com.br"
+			"name": "wrne",
+			"email": "wanderley.ramos@edu.pucrs.br"
 		}
 	},
 	"servers": [
@@ -15,7 +15,7 @@
 			"description": "Development Local server "
 		},
 		{
-			"url": "https://api.ccab-agro.net",
+			"url": "https://api.gatekeeper.net.br",
 			"description": "Production server"
 		}
 	],

@@ -8,7 +8,7 @@ const port = process.env.port || 3000;
 
 
 // Define variável global para definir configurações da fila de mensagens
-process.ccab_conecta = {
+process.gatekeeper_hub = {
 	exchanges: {
 		farmi : 'farmi'
 	},
@@ -22,7 +22,7 @@ http.createServer(app).listen(port, function () {
  | |  | |     / _ \\ |  _ \\  | |   / _ \\| '_ \\ / _ \\/ __| __/ _\` |
  | |__| |___ / ___ \\| |_) | | |__| (_) | | | |  __/ (__| || (_| |
   \\____\\____/_/   \\_\\____/   \\____\\___/|_| |_|\\___|\\___|\\__\\__,_|
-                                                      V 0.0.1: ${process.ccab_conecta.MODE} mode`);
+                                                      V 0.0.1: ${process.gatekeeper_hub.MODE} mode`);
 	
 	console.log(`Servidor escutando na porta: ${port}`);
 	webhooks() //Ativa os webhooks de integração vindos do Protheus

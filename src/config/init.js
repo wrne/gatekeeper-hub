@@ -27,7 +27,7 @@ async function createTable() {
 
 	const db = new dbConn();
 
-	const createTableUsersStt = `create table [ccab_conecta_users]
+	const createTableUsersStt = `create table [gatekeeper_hub_users]
 	(
 		id       UNIQUEIDENTIFIER primary key,
 		login	 varchar(40) not null unique,
@@ -37,11 +37,11 @@ async function createTable() {
 	)
 	`
 
-	// const extendedPropertyStt = `exec sp_addextendedproperty 'MS_Description', N'Usuários de integração CCAB', 'SCHEMA', 'dbo', 'TABLE', 'ccab_conecta_users'`
+	// const extendedPropertyStt = `exec sp_addextendedproperty 'MS_Description', N'Usuários de integração', 'SCHEMA', 'dbo', 'TABLE', 'gatekeeper_hub_users'`
 
 	const createIndexStt = `
-	create unique index [ccab_conecta_users_id_uindex]
-	on [ccab_conecta_users] (id)
+	create unique index [gatekeeper_hub_users_id_uindex]
+	on [gatekeeper_hub_users] (id)
 	`
 
 
