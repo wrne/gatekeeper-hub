@@ -45,10 +45,10 @@ async function putNewOrder(origin, data){
 		await validateNewOrderData(orderData)
 
 		// Publica dados do pedido na fila de pedido da agrega
-		await publish(process.gatekeeper_hub.exchanges.farmi,'farmi_orders',orderData)
+		await publish(process.gatekeeper_hub.exchanges.farmi,'fila_orders',orderData)
 		
 		// Publica dados do pagamento na fila pagamentos da agrega
-		await publish(process.gatekeeper_hub.exchanges.farmi,'farmi_payments',paymentData)
+		await publish(process.gatekeeper_hub.exchanges.farmi,'fila_payments',paymentData)
 
 	}
 	

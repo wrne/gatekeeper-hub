@@ -7,11 +7,7 @@ async function getAllProducts(filter) {
 	const pageSize = (!filter.pageSize ? 10 : filter.pageSize)
 
 	const filters = {};
-	filters['B1_TIPO'] = 'PA' // Tipo de produto
-	filters['B1_GRUPO'] = {
-		value: '800',
-		operator: '<>'
-	}
+	filters['B1_TIPO'] = 'PA' // Tipo de produto igual a Produto Acabado
 	
 	// Retorna um obj com o De/Para de campos entre o filtro da API e o Protheus  
 	const mappingFields = Object.entries(mappingFieldsProducts); 

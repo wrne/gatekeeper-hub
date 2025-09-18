@@ -16,13 +16,13 @@ export async function createQueuesStructure() {
 			bindindRouting: [
 				{
 					// Binding da fila dos pedidos da Agrega
-					queue: "farmi_orders",
-					routingKey: "farmi_orders"
+					queue: "fila_orders",
+					routingKey: "fila_orders"
 				},
 				{
 					// Binding da fila dos pedidos do Simulador
-					queue: "farmi_payments",
-					routingKey: "farmi_payments"
+					queue: "fila_payments",
+					routingKey: "fila_payments"
 				}
 			]
 		},

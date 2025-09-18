@@ -45,37 +45,5 @@ router.post('/newUser',autorizateMiddleware(['admin']), async(req, res) => {
 	
 });
 
-router.post('/newTaskAgrega', async(req, res) => {
-	
-	
-	try {
-		
-		if(!taskController.newTask('agrega',req.body))
-			throw new Error("task adding failed");
-		
-		logMessage(`Agrega Task added successful`)
-		res.success(null, 'task added successful.')
-		
-		
-	} catch (error) {
-		res.error(500, error, 'Failure on add Agregga task')
-	}
-});
-
-router.post('/newTaskSimulador', async (req, res) => {
-	
-	try {
-		
-		await taskController.newTask('simulador',req.body)
-		logMessage(`Simulador Task added successful`)
-
-		res.success(null, 'task added successful.')
-
-
-	} catch (error) {
-		res.error(500, error, 'Failure on add Simulador task')
-	}
-});
-
 
 export default router;
